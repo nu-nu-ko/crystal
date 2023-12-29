@@ -1,5 +1,6 @@
 {
   config,
+  pkgs,
   lib,
   ...
 }: {
@@ -10,17 +11,27 @@
     services = {
       qbittorrent = {
         enable = true;
-        openFirewall = true;
+        package = (pkgs.qbittorrent-nox.overrideAttrs { meta.mainProgram = "qbittorrent-nox"; });
         serverConfig = {
-          LegalNotice.Accepted = true;
-          Preferences.WebUI.Port = 8077;
+          LegalNotice = {
+            Accepted = true;
+          };
+          Preferences = {
+            WebUI = {
+              Port = 8077;
+            };
+          };
         };
       };
       nginx.virtualHosts."${domain}" = {
         forceSSL = true;
         enableACME = true;
-        locations."/".proxyPass = "http://127.0.0.1:8077";
+        locations."/".proxyPass = "http://127.0.0.1:8080";
       };
+    };
+    networking.firewall = {
+        allowedTCPPorts = [8080];
+        allowedUDPPorts = [8080];
     };
   };
 }

@@ -1,5 +1,5 @@
 {
-  description = "a";
+  description = "abcdefghi";
   inputs = {
     qb.url = "github:nu-nu-ko/nixpkgs?ref=nixos/qbittorrent-init";
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";

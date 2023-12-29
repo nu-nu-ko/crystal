@@ -19,8 +19,11 @@
       web = {
         enable = true;
         domain = "nuko.city";
+        # cba for now. prob just use synnapse tbh
+        conduit.enable = false;
         forgejo.enable = true;
-        jellyfin.enable = true;
+        jellyfin.enable = false;
+        qbit.enable = true;
         nextcloud.enable = true;
         vaultwarden.enable = true;
       };

@@ -13,7 +13,7 @@
         jellyfin = {
           enable = true;
           openFirewall = true;
-          dataDir = "/storage/volumes/jellyfin";
+          #dataDir = "/storage/volumes/jellyfin";
         };
         nginx.virtualHosts."${domain}" = {
           forceSSL = true;

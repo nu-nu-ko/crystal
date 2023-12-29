@@ -23,17 +23,18 @@
           add_header 'Referrer-Policy' 'origin-when-cross-origin';
           add_header X-Frame-Options DENY;
           add_header X-Content-Type-Options nosniff;
+          add_header Access-Control-Allow-Origin "*";
         '';
         recommendedProxySettings = true;
         recommendedTlsSettings = true;
         recommendedOptimisation = true;
         recommendedGzipSettings = true;
-        /*virtualHosts."${base}" = {
+          virtualHosts."${base}" = {
           forceSSL = true;
           enableACME = true;
-          serverAliases = [base];
-          root = "/storage/volumes/website/public";
-        };*/
+          #serverAliases = [base];
+          #root = "/storage/volumes/website/public";
+        };
       };
     };
 }

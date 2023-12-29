@@ -1,6 +1,7 @@
 {
+  description = "a";
   inputs = {
-    jf.url = "github:nu-nu-ko/nixpkgs?ref=nixos-jellyfin-dirs";
+    qb.url = "github:nu-nu-ko/nixpkgs?ref=nixos/qbittorrent-init";
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     agenix = {
       url = "github:ryantm/agenix";
@@ -24,7 +25,7 @@
     };
   };
   outputs = {
-    jf,
+    qb,
     nixpkgs,
     agenix,
     snms,
@@ -45,7 +46,7 @@
           ++ importAll ./libs
           ++ importAll ./mods;
       };
-      library = jf.lib.nixosSystem {
+      library = qb.lib.nixosSystem {
         specialArgs = {inherit inputs;};
         modules =
           [

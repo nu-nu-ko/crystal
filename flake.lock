@@ -159,11 +159,11 @@
     },
     "qbit": {
       "locked": {
-        "lastModified": 1704082634,
-        "narHash": "sha256-YHd926jp5lajB+wcgB+LtsR13iMaEaG2tO/q204mV84=",
+        "lastModified": 1704098519,
+        "narHash": "sha256-dTWR+pRuhCM7NjoKjNteeVXIGOD9cl/7sIs3MLirjT0=",
         "owner": "nu-nu-ko",
         "repo": "nixpkgs",
-        "rev": "19fb2a2e2cd6782f6a888860903ff64c4f3b3b7b",
+        "rev": "c9ae90b3976a664b7419f6d1ff667ec91b29b716",
         "type": "github"
       },
       "original": {

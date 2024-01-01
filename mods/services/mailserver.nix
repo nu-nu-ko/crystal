@@ -20,10 +20,10 @@
         loginAccounts = {
           "host@${baseDomain}" = {
             hashedPasswordFile = config.age.secrets.mail.path;
-            aliases = ["acme@${baseDomain}" "admin@${baseDomain}"];
+            aliases = ["me@${baseDomain}" "acme@${baseDomain}" "admin@${baseDomain}"];
           };
           "nextcloud@${baseDomain}".hashedPasswordFile = config.age.secrets.mail.path;
-          "vaultwarden@${baseDomain}".hashedPasswordFile = config.age.secrets.mail.path;
+          #"vaultwarden@${baseDomain}".hashedPasswordFile = config.age.secrets.mail.path;
         };
         certificateScheme = "acme-nginx";
       };

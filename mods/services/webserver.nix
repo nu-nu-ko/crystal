@@ -9,7 +9,8 @@
   };
   config = let
     domain = "${config.local.services.web.domain}";
-  in lib.mkIf config.local.services.web.enable {
+  in
+    lib.mkIf config.local.services.web.enable {
       networking.firewall.allowedTCPPorts = [80 443 8080];
       security.acme = {
         acceptTerms = true;

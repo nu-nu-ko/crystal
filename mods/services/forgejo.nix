@@ -12,7 +12,7 @@
         forgejo = {
           enable = true;
           settings = {
-            service.DISABLE_REGISTRATION = false;
+            service.DISABLE_REGISTRATION = true;
             session.COOKIE_SECURE = true;
             server = {
               ROOT_URL = "https://${domain}/";

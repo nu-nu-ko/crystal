@@ -1,7 +1,10 @@
 {
-  description = "abcdefghi";
   inputs = {
-    qb.url = "github:nu-nu-ko/nixpkgs?ref=nixos/qbittorrent-init";
+    # needs openFirewall to be fixed, and a solution to including alt webuis
+    qbit.url = "github:nu-nu-ko/nixpkgs?ref=nixos/qbittorrent-init";
+    # awaiting pr merge
+    jelly.url = "github:nu-nu-ko/nixpkgs?ref=nixos-jellyfin-dirs";
+
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     agenix = {
       url = "github:ryantm/agenix";
@@ -25,7 +28,6 @@
     };
   };
   outputs = {
-    qb,
     nixpkgs,
     agenix,
     snms,
@@ -42,11 +44,12 @@
           [
             ./hosts/factory.nix
             agenix.nixosModules.default
+            snms.nixosModules.default
           ]
           ++ importAll ./libs
           ++ importAll ./mods;
       };
-      library = qb.lib.nixosSystem {
+      library = nixpkgs.lib.nixosSystem {
         specialArgs = {inherit inputs;};
         modules =
           [

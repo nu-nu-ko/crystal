@@ -19,10 +19,8 @@
       web = {
         enable = true;
         domain = "nuko.city";
-        # cba for now. prob just use synnapse tbh
-        conduit.enable = false;
         forgejo.enable = true;
-        jellyfin.enable = false;
+        jellyfin.enable = true;
         qbit.enable = true;
         nextcloud.enable = true;
         vaultwarden.enable = true;
@@ -40,7 +38,6 @@
   security.sudo.execWheelOnly = true;
   services.openssh = {
     enable = true;
-    ports = [56789];
     openFirewall = true;
     settings = {
       PermitRootLogin = "no";
@@ -72,6 +69,10 @@
         openssh.authorizedKeys.keys = [
           # factory / desktop
           "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBN4+lDQxOfTVODQS4d3Mm+y3lpzpsSkwxjbzN4NwJlJ"
+          # laptop
+          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIrSQqI/X+I9fcQGOxgvTzZ2p/9SG4abc4xXkrAdRxBc"
+          # phone
+          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJZH8voUTYblnUaSThDyB+JrdFTVMVVxT4kA+EE+XrCG"
         ];
       };
     };
@@ -85,12 +86,12 @@
     useDHCP = false;
     interfaces.enp6s0.ipv4.addresses = [
       {
-        address = "192.168.0.7";
+        address = "192.168.0.3";
         prefixLength = 24;
       }
     ];
     defaultGateway = "192.168.0.1";
-    nameservers = ["192.168.0.1"];
+    nameservers = ["1.1.1.1" "1.1.0.0"];
   };
   hardware = {
     enableRedistributableFirmware = true;

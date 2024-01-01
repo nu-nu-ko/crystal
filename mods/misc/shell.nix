@@ -48,7 +48,8 @@
       '';
       shellAliases = {
         ls = "eza";
-        ssh-library = "ssh 192.168.0.7 -p 56789";
+        grep = "grep --color=auto";
+        ssh-library = "ssh 192.168.0.3";
       };
       promptInit = "PROMPT=${config.local.misc.shell.prompt}";
     };

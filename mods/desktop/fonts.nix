@@ -9,11 +9,11 @@
     fonts = {
       packages = with pkgs; [
         (pkgs.callPackage ../../pkgs/sfFonts.nix {})
-        # mostly as fallsbacks.
-        noto-fonts
-        noto-fonts-cjk
         noto-fonts-emoji
         noto-fonts-extra
+        # fallsbacks.
+        noto-fonts
+        noto-fonts-cjk
         dejavu_fonts
       ];
       fontconfig = {

@@ -8,13 +8,12 @@
     domain = lib.mkOption {type = lib.types.str;};
   };
   config = let
-    base = "nuko.city";
-  in
-    lib.mkIf config.local.services.web.enable {
+    domain = "${config.local.services.web.domain}";
+  in lib.mkIf config.local.services.web.enable {
       networking.firewall.allowedTCPPorts = [80 443 8080];
       security.acme = {
         acceptTerms = true;
-        defaults.email = "acme@${base}";
+        defaults.email = "acme@${domain}";
       };
       services.nginx = {
         enable = true;
@@ -29,11 +28,11 @@
         recommendedTlsSettings = true;
         recommendedOptimisation = true;
         recommendedGzipSettings = true;
-          virtualHosts."${base}" = {
+        virtualHosts."${domain}" = {
           forceSSL = true;
           enableACME = true;
-          #serverAliases = [base];
-          #root = "/storage/volumes/website/public";
+          serverAliases = [domain];
+          root = "/storage/volumes/website/public";
         };
       };
     };

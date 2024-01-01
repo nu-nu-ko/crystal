@@ -88,12 +88,12 @@
     useDHCP = false;
     interfaces.enp39s0.ipv4.addresses = [
       {
-        address = "192.168.0.10";
+        address = "192.168.0.4";
         prefixLength = 24;
       }
     ];
     defaultGateway = "192.168.0.1";
-    nameservers = ["192.168.0.1"];
+    nameservers = ["1.1.1.1" "1.1.0.0"];
   };
   hardware = {
     enableRedistributableFirmware = true;

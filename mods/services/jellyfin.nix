@@ -2,8 +2,17 @@
   config,
   pkgs,
   lib,
+  inputs,
+  modulesPath,
   ...
 }: {
+  # awaiting PR
+  disabledModules = [
+    "${modulesPath}/services/misc/jellyfin.nix"
+  ];
+  imports = [
+    "${inputs.jelly}/nixos/modules/services/misc/jellyfin.nix"
+  ];
   options.local.services.web.jellyfin.enable = lib.mkEnableOption "";
   config = let
     domain = "jelly.${config.local.services.web.domain}";
@@ -13,7 +22,7 @@
         jellyfin = {
           enable = true;
           openFirewall = true;
-          #dataDir = "/storage/volumes/jellyfin";
+          dataDir = "/storage/volumes/jellyfin";
         };
         nginx.virtualHosts."${domain}" = {
           forceSSL = true;
@@ -21,6 +30,7 @@
           locations."/".proxyPass = "http://127.0.0.1:8096";
         };
       };
+
       # intel hardware transcoding setup
       nixpkgs.config.packageOverrides = pkgs: {
         vaapiIntel = pkgs.vaapiIntel.override {enableHybridCodec = true;};

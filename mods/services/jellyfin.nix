@@ -13,7 +13,7 @@
   imports = [
     "${inputs.jelly}/nixos/modules/services/misc/jellyfin.nix"
   ];
-  ####    
+  ####
   options.local.services.web.jellyfin.enable = lib.mkEnableOption "";
   config = let
     domain = "jelly.${config.local.services.web.domain}";

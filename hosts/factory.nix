@@ -78,7 +78,13 @@
     "Videos".source = "/storage/Videos";
   };
   # requires system-level setup
-  programs.steam.enable = true;
+  programs.steam = {
+    enable = true;
+    package = pkgs.steam.override {
+      # required for tf2 & other older source games.
+      extraLibraries = pkgs: [pkgs.pkgsi686Linux.gperftools];
+    };
+  };
   ### hardware ###
   networking = {
     hostName = "factory";

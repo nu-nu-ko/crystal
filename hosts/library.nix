@@ -16,11 +16,12 @@
       };
     };
     services = {
+      fail2ban.enable = true;
       web = {
         enable = true;
         domain = "nuko.city";
         forgejo.enable = true;
-        jellyfin.enable = true;
+        jellyfin.enable = false;
         qbit.enable = true;
         nextcloud.enable = true;
         vaultwarden.enable = true;

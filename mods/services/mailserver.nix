@@ -8,9 +8,15 @@
     baseDomain = "${config.local.services.web.domain}";
   in
     lib.mkIf config.local.services.mailserver.enable {
-      age.secrets.mail = {
-        file = ../../shhh/mail.age;
-        owner = "dovecot2";
+      age.secrets = {
+        personal = {
+          file = ../../shhh/personal_mail.age;
+          owner = "dovecot2";
+        };
+        services = {
+          file = ../../shhh/services_mail.age;
+          owner = "dovecot2";
+        };
       };
       mailserver = {
         enable = true;
@@ -19,11 +25,11 @@
 
         loginAccounts = {
           "host@${baseDomain}" = {
-            hashedPasswordFile = config.age.secrets.mail.path;
+            hashedPasswordFile = config.age.secrets.personal.path;
             aliases = ["me@${baseDomain}" "acme@${baseDomain}" "admin@${baseDomain}"];
           };
-          "nextcloud@${baseDomain}".hashedPasswordFile = config.age.secrets.mail.path;
-          #"vaultwarden@${baseDomain}".hashedPasswordFile = config.age.secrets.mail.path;
+          "cloud@${baseDomain}".hashedPasswordFile = config.age.secrets.services.path;
+          #"vault@${baseDomain}".hashedPasswordFile = config.age.secrets.services.path;
         };
         certificateScheme = "acme-nginx";
       };

@@ -9,8 +9,12 @@
     domain = "cloud.${config.local.services.web.domain}";
   in
     lib.mkIf config.local.services.web.nextcloud.enable {
-      age.secrets.next = {
-        file = ../../shhh/next.age;
+      #### STATEFUL CRAP WARNING ####
+      # this module only sets the service up. all config is done in the client
+      # the postgres table used is apart of this, trying to put in a volume seems impractical.
+      # thankfully actual user data is stored in the nextcloud volume.
+      age.secrets.user_cloud = {
+        file = ../../shhh/user_cloud.age;
         owner = "nextcloud";
       };
       services = {
@@ -26,7 +30,7 @@
             extraTrustedDomains = ["https://${domain}"];
             trustedProxies = ["https://${domain}"];
             adminuser = "nuko";
-            adminpassFile = config.age.secrets.next.path;
+            adminpassFile = config.age.secrets.user_cloud.path;
             dbtype = "pgsql";
             dbhost = "/run/postgresql";
             dbname = "nextcloud";
@@ -36,6 +40,7 @@
           https = true;
           phpOptions = {
             "opcache.interned_strings_buffer" = "16";
+            "output_buffering" = "off";
           };
         };
         postgresql = {

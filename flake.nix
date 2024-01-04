@@ -3,8 +3,8 @@
     # needs openFirewall to be fixed, and a solution to including alt webuis
     qbit.url = "github:nu-nu-ko/nixpkgs?ref=nixos/qbittorrent-init";
     # awaiting pr merge
-    jelly.url = "github:nu-nu-ko/nixpkgs?ref=nixos-jellyfin-dirs";
-
+    #jelly.url = "github:nu-nu-ko/nixpkgs?ref=nixos-jellyfin-dirs";
+    jelly.url = "git+file:/home/nuko/nixpkgs";
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     agenix = {
       url = "github:ryantm/agenix";

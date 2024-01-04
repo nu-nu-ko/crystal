@@ -68,7 +68,7 @@
       };
       networking.firewall = {
         allowedTCPPorts = [8077 43862];
-        allowedUDPPorts = [8077 42862];
+        allowedUDPPorts = [42862];
       };
     };
 }

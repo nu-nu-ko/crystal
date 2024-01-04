@@ -6,7 +6,10 @@
 }: {
   local = {
     misc = {
-      nix.config = true;
+      nix = {
+        config = true;
+        flakePath = "/storage/repos/crystal";
+      };
       age.setup = true;
       clean.enable = true;
       root.disable = true;
@@ -21,7 +24,7 @@
         enable = true;
         domain = "nuko.city";
         forgejo.enable = true;
-        jellyfin.enable = false;
+        jellyfin.enable = true;
         qbit.enable = true;
         nextcloud.enable = true;
         vaultwarden.enable = true;

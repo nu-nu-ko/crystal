@@ -26,15 +26,17 @@
           autoUpdateApps.enable = true;
           configureRedis = true;
           config = {
-            overwriteProtocol = "https";
-            extraTrustedDomains = ["https://${domain}"];
-            trustedProxies = ["https://${domain}"];
             adminuser = "nuko";
             adminpassFile = config.age.secrets.user_cloud.path;
             dbtype = "pgsql";
             dbhost = "/run/postgresql";
             dbname = "nextcloud";
-            defaultPhoneRegion = "NZ";
+          };
+          extraOptions = {
+            overwriteprotocol = "https";
+            trusted_proxies = ["https://${domain}"];
+            trusted_domains = ["https://${domain}"];
+            default_phone_region = "NZ";
           };
           nginx.recommendedHttpHeaders = true;
           https = true;

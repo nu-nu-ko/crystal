@@ -57,17 +57,18 @@
     },
     "jelly": {
       "locked": {
-        "lastModified": 1704254685,
-        "narHash": "sha256-lFP828y5bId7ivGEHO120SRk9RxGfcKtn+eKiWraKRs=",
-        "ref": "refs/heads/nixos-jellyfin-dirs",
-        "rev": "7a71762725e63774fb46db3c261a3a55d4d730e6",
-        "revCount": 562967,
-        "type": "git",
-        "url": "file:/home/nuko/nixpkgs"
+        "lastModified": 1704398360,
+        "narHash": "sha256-J7C1inHeatpS341ya6hCxgdGWJbT6SXItqwYH4uEnos=",
+        "owner": "nu-nu-ko",
+        "repo": "nixpkgs",
+        "rev": "f413456f78db1dbc18a9b345005bd070c973cf44",
+        "type": "github"
       },
       "original": {
-        "type": "git",
-        "url": "file:/home/nuko/nixpkgs"
+        "owner": "nu-nu-ko",
+        "ref": "nixos-jellyfin-dirs",
+        "repo": "nixpkgs",
+        "type": "github"
       }
     },
     "mountain": {
@@ -112,11 +113,11 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1703961334,
-        "narHash": "sha256-M1mV/Cq+pgjk0rt6VxoyyD+O8cOUiai8t9Q6Yyq4noY=",
+        "lastModified": 1704194953,
+        "narHash": "sha256-RtDKd8Mynhe5CFnVT8s0/0yqtWFMM9LmCzXv/YKxnq4=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "b0d36bd0a420ecee3bc916c91886caca87c894e9",
+        "rev": "bd645e8668ec6612439a9ee7e71f7eac4099d4f6",
         "type": "github"
       },
       "original": {

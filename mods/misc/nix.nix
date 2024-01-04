@@ -4,7 +4,10 @@
   config,
   ...
 }: {
-  options.local.misc.nix.config = lib.mkEnableOption "";
+  options.local.misc.nix = {
+    config = lib.mkEnableOption "";
+    flakePath = lib.mkOption {type = lib.types.str;};
+  };
   config = lib.mkIf config.local.misc.nix.config {
     nix = {
       settings = {
@@ -30,7 +33,10 @@
       hostPlatform = "x86_64-linux";
       config.allowUnfree = true;
     };
-    environment.etc."nix/inputs/nixpkgs".source = inputs.nixpkgs.outPath;
+    environment = {
+      etc."nix/inputs/nixpkgs".source = inputs.nixpkgs.outPath;
+      sessionVariables.FLAKE = config.local.misc.nix.flakePath;
+    };
     documentation.enable = false;
   };
 }

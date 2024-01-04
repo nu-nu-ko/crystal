@@ -6,7 +6,10 @@
 }: {
   local = {
     misc = {
-      nix.config = true;
+      nix = {
+        config = true;
+        flakePath = "/storage/crystal";
+      };
       age.setup = true;
       clean.enable = true;
       root.disable = true;

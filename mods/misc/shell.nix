@@ -22,7 +22,6 @@
         XCOMPOSECACHE = "\"$XDG_CACHE_HOME\"/X11/xcompose";
         ERRFILE = "\"$XDG_CACHE_HOME\"/X11/xsession-errors";
       };
-      sessionVariables.FLAKE = "/storage/crystal";
     };
     programs.zsh = {
       enable = true;

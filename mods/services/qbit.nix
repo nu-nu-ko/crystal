@@ -50,7 +50,7 @@
               WebUI = {
                 Port = 8077;
                 Username = "nuko";
-                Password_PBKDF2 = "\"@ByteArray(M0FhBucrHYySuTMNFuFN4A==:3T/dU2kxC2Z6k74CMNFr09wEULEmYDCCnaiVsSV4yChKalsyEGHOMu38sJZiahQeg7LmBVbTJqSPcY/1cGzicw==)\"";
+                Password_PBKDF2 = "\"@ByteArray(g+9najSg/RPqxpxPVWLi9g==:TtILo6iFdNBeD0BhYuPtTYSPiP4QLc2M5dJ3Zxen28g9uy+g2Paq5KF1sU5POQF2ItChu1bujpp0ydLy9z7jSQ==)\"";
                 ReverseProxySupportEnabled = true;
                 TrustedReverseProxiesList = "qbit.nuko.city";
                 AlternativeUIEnabled = true;

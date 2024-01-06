@@ -17,7 +17,7 @@
       sway = {
         enable = true;
         # swayfx is a fork with some visual mods.
-        package = pkgs.swayfx.overrideAttrs {passthru.providedSessions = ["sway"];};
+        #package = pkgs.swayfx.overrideAttrs {passthru.providedSessions = ["sway"];};
         wrapperFeatures.gtk = true;
         extraPackages = with pkgs; [
           # theme stuff.
@@ -36,6 +36,7 @@
         # nixos uses logind by default not seatd, java apps need the bottom flag.
         extraSessionCommands = ''
           export LIBSEAT_BACKEND=logind
+          export WLR_RENDERER=vulkan
           export SDL_VIDEODRIVER=wayland
           export _JAVA_AWT_WM_NONREPARENTING=1
         '';
@@ -83,8 +84,11 @@
       grim = lib.getExe pkgs.grim;
       slurp = lib.getExe pkgs.slurp;
       jq = lib.getExe pkgs.jq;
+
       ccms = lib.concatMapStringsSep;
+
       lcp = config.local.colours.primary;
+      lca = config.local.colours.alpha;
     in {
       ".config/sway/config".text = ''
         seat seat0 xcursor_theme phinger-cursors 24
@@ -112,7 +116,7 @@
         output ${d2} background wallpaper2 fill
         default_border pixel 3
         gaps inner 10
-        shadows enable
+        #shadows enable
         client.focused #${lcp.main} #${lcp.main} #${lcp.main} #${lcp.main}
         client.unfocused #${lcp.bg} #${lcp.bg} #${lcp.bg} #${lcp.bg}
         client.focused_inactive #${lcp.bg} #${lcp.bg} #${lcp.bg} #${lcp.bg}
@@ -121,7 +125,7 @@
 
         bindsym ${mod}+Return exec alacritty
         bindsym ${mod}+Shift+q kill
-        bindsym ${mod}+d exec wofi --show drun
+        bindsym ${mod}+d exec wofi --show drun -a -W 15% -H 35%
         bindsym ${mod}+Shift+s exec ${grim} -g "$(${slurp} -d)" - | wl-copy -t image/png
         bindsym ${mod}+Shift+d exec ${grim} -g "$(swaymsg -t get_tree | ${jq} -r '.. | select(.pid? and .visible?) | .rect | "\(.x),\(.y) \(.width)x\(.height)"' | ${slurp} -d)" - | wl-copy -t image/png
         bindsym ${mod}+Shift+e exec swaynag -t warning -m 'confirm quit sway' -B 'confirm' 'swaymsg exit'
@@ -154,7 +158,7 @@
           {
             "layer": "bottom",
             "position": "left",
-            "output": "${d1},
+            "output": "${d1}",
             "spacing": 10,
             "margin-top": 10,
             "margin-bottom": 10,
@@ -245,9 +249,9 @@
         #workspaces {
             padding: 0px;
             border-radius: 0px;
-            border:2px solid #262626;
-            background-color: #0f0f0f;
-            color: #f0f0f0;
+            border:2px solid #${lca.black};
+            background-color: #${lcp.bg};
+            color: #${lcp.fg};
         }
         #worksapces button {
             padding: 2px;
@@ -256,10 +260,10 @@
             border-radius: 0px;
         }
         #workspaces button.focused {
-            color: #8aacab;
+            color: #${lcp.main};
         }
         #workspaces button.urgent {
-            color: #ac8a8c;
+            color: #${lcp.main};
         }
 
         #network,
@@ -267,17 +271,34 @@
         #tray,
         #clock {
             border-radius: 0px;
-            border:2px solid #262626;
-            background-color: #0f0f0f;
-            color: #f0f0f0;
+            border:2px solid #${lca.black};
+            background-color: #${lcp.bg};
+            color: #${lcp.fg};
             padding: 2px;
         }
 
         tooltip label {
-            background-color: #0f0f0f;
-            color: #f0f0f0;
+            background-color: #${lcp.bg};
+            color: #${lcp.fg};
             border-radius: 0px;
-            border:2px solid #262626;
+            border:2px solid #${lca.black};
+        }
+      '';
+      ".config/wofi/style.css".text = ''
+        #window {
+            border: 3px solid #${lcp.main};
+        }
+        #input {
+            marfin: 15px;
+        }
+        #inner-box {
+            margin: 0px 15px 15px 15px;
+        }
+        #entry {
+            margin: 5px;
+        }
+        #entry:selected {
+            color: #${lcp.main};
         }
       '';
     };

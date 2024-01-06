@@ -22,16 +22,16 @@
       in ''
         :root {
            --window-colour:               #${lc.primary.bg};
-           --secondary-colour:            #${lc.normal.black};
+           --secondary-colour:            #${lc.alpha.black};
            --inverted-colour:             #${lc.primary.fg};
-           --uc-identity-color-blue:      #${lc.normal.blue};
-           --uc-identity-color-turquoise: #${lc.normal.cyan};
-           --uc-identity-color-green:     #${lc.normal.green};
-           --uc-identity-color-yellow:    #${lc.normal.yellow};
-           --uc-identity-color-orange:    #${lc.normal.orange};
-           --uc-identity-color-red:       #${lc.normal.red};
-           --uc-identity-color-pink:      #${lc.bright.red};
-           --uc-identity-color-purple:    #${lc.normal.magenta};
+           --uc-identity-color-blue:      #${lc.alpha.blue};
+           --uc-identity-color-turquoise: #${lc.alpha.cyan};
+           --uc-identity-color-green:     #${lc.alpha.green};
+           --uc-identity-color-yellow:    #${lc.alpha.yellow};
+           --uc-identity-color-orange:    #${lc.alpha.orange};
+           --uc-identity-color-red:       #${lc.alpha.red};
+           --uc-identity-color-pink:      #${lc.accent.red};
+           --uc-identity-color-purple:    #${lc.alpha.magenta};
            --urlbar-popup-url-color: var(--uc-identity-color-purple) !important;
            --uc-border-radius: 0;
            --uc-urlbar-width: clamp(200px, 50vw, 600px);

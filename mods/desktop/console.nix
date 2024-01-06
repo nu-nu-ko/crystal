@@ -15,20 +15,20 @@
         lc = config.local.colours;
       in [
         "000000" # prevent flicker
-        lc.normal.red
-        lc.normal.green
-        lc.normal.yellow
-        lc.normal.blue
-        lc.normal.magenta
-        lc.normal.cyan
-        lc.normal.white
-        lc.bright.red
-        lc.bright.green
-        lc.bright.yellow
-        lc.bright.blue
-        lc.bright.magenta
-        lc.bright.cyan
-        lc.bright.white
+        lc.alpha.red
+        lc.alpha.green
+        lc.alpha.yellow
+        lc.alpha.blue
+        lc.alpha.magenta
+        lc.alpha.cyan
+        lc.alpha.white
+        lc.accent.red
+        lc.accent.green
+        lc.accent.yellow
+        lc.accent.blue
+        lc.accent.magenta
+        lc.accent.cyan
+        lc.accent.white
         lc.primary.fg
       ];
     };

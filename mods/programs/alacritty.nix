@@ -8,32 +8,34 @@
   config = lib.mkIf config.local.programs.alacritty.enable {
     users.users.main.packages = [pkgs.alacritty];
     home.file.".config/alacritty/alacritty.yml".text = let
-      lc = config.local.colours;
+      lcp = config.local.colours.primary;
+      lca = config.local.colours.alpha;
+      lcac = config.local.colours.accent;
     in ''
       colors:
         bright:
-          black: '#${lc.bright.black}'
-          red: '#${lc.bright.red}'
-          green: '#${lc.bright.green}'
-          yellow: '#${lc.bright.yellow}'
-          blue: '#${lc.bright.blue}'
-          magenta: '#${lc.bright.magenta}'
-          cyan: '#${lc.bright.cyan}'
-          white: '#${lc.bright.white}'
+          black: '#${lcac.black}'
+          red: '#${lcac.red}'
+          green: '#${lcac.green}'
+          yellow: '#${lcac.yellow}'
+          blue: '#${lcac.blue}'
+          magenta: '#${lcac.magenta}'
+          cyan: '#${lcac.cyan}'
+          white: '#${lcac.white}'
         normal:
-          black: '#${lc.normal.black}'
-          red: '#${lc.normal.red}'
-          green: '#${lc.normal.green}'
-          yellow: '#${lc.normal.yellow}'
-          blue: '#${lc.normal.blue}'
-          magenta: '#${lc.normal.magenta}'
-          cyan: '#${lc.normal.cyan}'
-          white: '#${lc.normal.white}'
+          black: '#${lca.black}'
+          red: '#${lca.red}'
+          green: '#${lca.green}'
+          yellow: '#${lca.yellow}'
+          blue: '#${lca.blue}'
+          magenta: '#${lca.magenta}'
+          cyan: '#${lca.cyan}'
+          white: '#${lca.white}'
         primary:
-          background: '#${lc.primary.bg}'
-          bright_foreground: '#${lc.primary.fg}'
-          dim_foreground: '#${lc.primary.fg}'
-          foreground: '#${lc.primary.fg}'
+          background: '#${lcp.bg}'
+          bright_foreground: '#${lcp.fg}'
+          dim_foreground: '#${lcp.fg}'
+          foreground: '#${lcp.fg}'
       cursor:
         style: Underline
         unfocused_hollow: false

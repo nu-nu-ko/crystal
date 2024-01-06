@@ -57,11 +57,11 @@
     },
     "jelly": {
       "locked": {
-        "lastModified": 1704398360,
-        "narHash": "sha256-J7C1inHeatpS341ya6hCxgdGWJbT6SXItqwYH4uEnos=",
+        "lastModified": 1704412060,
+        "narHash": "sha256-UKw/1yR4wOOO2EsEVNEjobRnbM/caqKBUv4C568hwKY=",
         "owner": "nu-nu-ko",
         "repo": "nixpkgs",
-        "rev": "f413456f78db1dbc18a9b345005bd070c973cf44",
+        "rev": "2253842d9ab1a7b96b1006e2f365a5252099342a",
         "type": "github"
       },
       "original": {
@@ -78,11 +78,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1702697711,
-        "narHash": "sha256-/L6OepqtM0NdzQs41KGDHQdAmXbmiGUwFvY9tB3Hvqw=",
+        "lastModified": 1704534522,
+        "narHash": "sha256-b6ajYnMmcL58eB1Gfy04A9s9s2sEYAGWRiPIBATwONQ=",
         "owner": "nu-nu-ko",
         "repo": "mountain-nix",
-        "rev": "ffe5c9933efd0c31d33d3ec62fd84fa2ac117409",
+        "rev": "9e2472af093a6f4ae97bccdbf42e8097f34429b9",
         "type": "github"
       },
       "original": {

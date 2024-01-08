@@ -119,7 +119,7 @@
   };
   powerManagement.cpuFreqGovernor = "schedutil";
   boot = {
-    kernelPackages = pkgs.linuxPackages_testing;
+    kernelPackages = pkgs.linuxPackages_xanmod_latest;
     loader = {
       timeout = 0; # hold space to open the menu
       systemd-boot.enable = true;
@@ -132,7 +132,7 @@
       availableKernelModules = ["nvme" "xhci_pci" "ahci" "usbhid" "usb_storage" "sd_mod"];
     };
     kernelModules = ["kvm-amd" "amd_pstate"];
-    supportedFilesystems = ["bcachefs"];
+    supportedFilesystems = ["zfs"];
     kernelParams = [
       "quiet"
       "splash"
@@ -143,31 +143,22 @@
       "amd_pstate.shared_mem=1"
     ];
   };
-  fileSystems = let
-    defaults = ["rw" "noatime" "compression=lz4" "background_compression=lz4" "discard"];
-  in {
+  fileSystems = {
     "/boot" = {
-      device = "/dev/disk/by-label/boot";
+      device = "/dev/disk/by-id/nvme-Samsung_SSD_980_500GB_S64DNF0R716711A-part1";
       fsType = "vfat";
       options = ["rw" "noatime"];
     };
     "/" = {
-      device = "/dev/disk/by-label/factory";
-      fsType = "bcachefs";
-      options = defaults;
+      device = "rpool/root";
+      fsType = "zfs";
     };
     "/storage" = {
-      device = "/dev/disk/by-label/storage";
-      fsType = "bcachefs";
-      options = defaults;
-    };
-    "/storage/games" = {
-      device = "/dev/disk/by-label/games";
-      fsType = "bcachefs";
-      options = defaults;
+      device = "spool/storage";
+      fsType = "zfs";
     };
   };
-  #swapDevices = [{device = "/swap";}];
+  swapDevices = [{device = "/dev/disk/by-id/nvme-Samsung_SSD_980_500GB_S64DNF0R716711A-part2";}];
   ### remember the warning.. ###
   system.stateVersion = "23.11";
 }

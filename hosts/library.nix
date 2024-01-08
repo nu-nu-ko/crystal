@@ -15,7 +15,7 @@
       root.disable = true;
       shell = {
         enable = true;
-        prompt = "'%F{red}書館%F{reset_color} %~ %% '";
+        prompt = "'%F{magenta}圖書館%F{reset_color} %~ %% '";
       };
     };
     services = {

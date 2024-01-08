@@ -1,9 +1,9 @@
 {
   disko.devices = let
-    nvme1 = "nvme-Samsung_SSD_980_500GB_S64DNF0R716711A";
-    nvme2 = "nvme-Samsung_SSD_980_500GB_S64DNF0R716712D";
-    sata1 = "ata-Samsung_SSD_860_EVO_1TB_S3YBNB0N912941N";
-    sata2 = "ata-Samsung_SSD_870_EVO_1TB_S6P5NX0T317019K";
+    nvme1 = "/dev/disk/by-id/nvme-Samsung_SSD_980_500GB_S64DNF0R716711A";
+    nvme2 = "/dev/disk/by-id/nvme-Samsung_SSD_980_500GB_S64DNF0R716712D";
+    sata1 = "/dev/disk/by-id/ata-Samsung_SSD_860_EVO_1TB_S3YBNB0N912941N";
+    sata2 = "/dev/disk/by-id/ata-Samsung_SSD_870_EVO_1TB_S6P5NX0T317019K";
   in {
     disk = {
       # root / system drive.
@@ -12,7 +12,7 @@
         device = "${nvme1}";
         content = {
           type = "gpt";
-          partition = {
+          partitions = {
             boot = {
               device = "${nvme1}-part1";
               type = "EF00";
@@ -25,7 +25,7 @@
             };
             swap = {
               device = "${nvme1}-part2";
-              size = "64gb";
+              size = "64G";
               content = {
                 type = "swap";
                 randomEncryption = true;
@@ -87,7 +87,6 @@
       };
       spool = {
         type = "zpool";
-        mode = "raid0";
         rootFsOptions = {
           compression = "zstd";
           xattr = "sa";

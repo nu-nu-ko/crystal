@@ -34,7 +34,7 @@
             root = {
               device = "${nvme1}-part3";
               size = "100%";
-              conent = {
+              content = {
                 type = "zfs";
                 pool = "rpool";
               };

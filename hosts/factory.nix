@@ -73,13 +73,13 @@
       ];
     };
   };
-  home.file = {
+/*  home.file = {
     "Documents".source = "/storage/Documents";
     "Downloads".source = "/storage/Downloads";
     "Pictures".source = "/storage/Pictures";
     "Crystal".source = "/storage/crystal";
     "Videos".source = "/storage/Videos";
-  };
+  };*/
   # requires system-level setup
   programs.steam = {
     enable = true;
@@ -153,10 +153,10 @@
       device = "rpool/root";
       fsType = "zfs";
     };
-    "/storage" = {
+    /*"/storage" = {
       device = "spool/storage";
       fsType = "zfs";
-    };
+    };*/
   };
   swapDevices = [{device = "/dev/disk/by-id/nvme-Samsung_SSD_980_500GB_S64DNF0R716711A-part2";}];
   ### remember the warning.. ###

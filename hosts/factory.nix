@@ -73,21 +73,23 @@
       ];
     };
   };
-/*  home.file = {
+  home.file = {
     "Documents".source = "/storage/Documents";
     "Downloads".source = "/storage/Downloads";
     "Pictures".source = "/storage/Pictures";
     "Crystal".source = "/storage/crystal";
     "Videos".source = "/storage/Videos";
-  };*/
-  # requires system-level setup
+  };
+  # requires some system level setup.
   programs.steam = {
     enable = true;
     package = pkgs.steam.override {
-      # required for tf2 & other older source games.
+      # required for source1 games.
       extraLibraries = pkgs: [pkgs.pkgsi686Linux.gperftools];
     };
   };
+  # removes 7sec boot delay lol
+  systemd.services.systemd-udev-settle.enable = false;
   ### hardware ###
   networking = {
     hostName = "factory";
@@ -116,6 +118,10 @@
       ];
     };
     xone.enable = true;
+  };
+  services.hardware.openrgb = {
+    enable = true;
+    motherboard = "amd";
   };
   powerManagement.cpuFreqGovernor = "schedutil";
   boot = {
@@ -153,10 +159,10 @@
       device = "rpool/root";
       fsType = "zfs";
     };
-    /*"/storage" = {
+    "/storage" = {
       device = "spool/storage";
       fsType = "zfs";
-    };*/
+    };
   };
   swapDevices = [{device = "/dev/disk/by-id/nvme-Samsung_SSD_980_500GB_S64DNF0R716711A-part2";}];
   ### remember the warning.. ###

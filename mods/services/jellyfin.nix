@@ -31,7 +31,6 @@
           locations."/".proxyPass = "http://127.0.0.1:8096";
         };
       };
-
       # intel hardware transcoding setup
       nixpkgs.config.packageOverrides = pkgs: {
         vaapiIntel = pkgs.vaapiIntel.override {enableHybridCodec = true;};

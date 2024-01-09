@@ -76,7 +76,7 @@
       .tree_view_always_by_pid=0
       .sort_direction=1
       .tree_sort_direction=1
-          .all_branches_collapsed=0
+      .all_branches_collapsed=0
     '';
   };
 }

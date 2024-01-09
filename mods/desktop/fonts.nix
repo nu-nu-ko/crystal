@@ -15,6 +15,8 @@
         noto-fonts
         noto-fonts-cjk
         dejavu_fonts
+        # source1 games require this.
+        wqy_zenhei
       ];
       fontconfig = {
         defaultFonts = {

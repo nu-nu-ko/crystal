@@ -16,15 +16,12 @@
       '';
       sway = {
         enable = true;
-        # swayfx is a fork with some visual mods.
-        #package = pkgs.swayfx.overrideAttrs {passthru.providedSessions = ["sway"];};
         wrapperFeatures.gtk = true;
         extraPackages = with pkgs; [
-          # theme stuff.
           phinger-cursors
           inputs.mountain.packages.${pkgs.system}.gtk
           flat-remix-icon-theme
-          vulkan-validation-layers # vulkan req, currently waiting on a fix from upstream.
+          vulkan-validation-layers # vulkan req, waiting on upstream to remove this hard dep.
           xdg-utils # defines what opens where.
           autotiling-rs # tile rules.
           swaylock
@@ -81,6 +78,8 @@
       d1 = "DP-1";
       d2 = "HDMI-A-1";
 
+      directions = [ "left" "down" "up" "right"];
+
       grim = lib.getExe pkgs.grim;
       slurp = lib.getExe pkgs.slurp;
       jq = lib.getExe pkgs.jq;
@@ -115,8 +114,7 @@
         output ${d1} background wallpaper1 fill
         output ${d2} background wallpaper2 fill
         default_border pixel 3
-        gaps inner 10
-        #shadows enable
+        gaps inner 5
         client.focused #${lcp.main} #${lcp.main} #${lcp.main} #${lcp.main}
         client.unfocused #${lcp.bg} #${lcp.bg} #${lcp.bg} #${lcp.bg}
         client.focused_inactive #${lcp.bg} #${lcp.bg} #${lcp.bg} #${lcp.bg}
@@ -136,24 +134,59 @@
         bindsym ${mod}+Shift+z fullscreen toggle
 
         # move client focus
-        bindsym ${mod}+Left focus left
-        bindsym ${mod}+Down focus down
-        bindsym ${mod}+Up focus up
-        bindsym ${mod}+Right focus right
+        ${ccms "\n" (n: "bindsym ${mod}+${n} focus ${n}") directions}
         # move focused client
-        bindsym ${mod}+Shift+Left move left
-        bindsym ${mod}+Shift+Down move down
-        bindsym ${mod}+Shift+Up move up
-        bindsym ${mod}+Shift+Right move right
+        ${ccms "\n" (n: "bindsym ${mod}+Shift+${n} move ${n}") directions}
 
         # bind workspaces to specific monitors
-        ${ccms "\n" (n: "workspace ${n} output ${d1}") ["1" "2" "3" "4"]}
-        ${ccms "\n" (n: "workspace ${n} output ${d2}") ["5" "6" "7" "8"]}
+        ${ccms "\n" (n: "workspace ${n} output ${d1}") (map toString (lib.range 1 4))}
+        ${ccms "\n" (n: "workspace ${n} output ${d2}") (map toString (lib.range 5 8))}
         # move focus / +Shift move focused client to workspace
-        ${ccms "\n" (n: "bindsym ${mod}+${n} workspace number ${n}") ["1" "2" "3" "4" "5" "6" "7" "8"]}
-        ${ccms "\n" (n: "bindsym ${mod}+Shift+${n} move container to workspace number ${n}") ["1" "2" "3" "4" "5" "6" "7" "8"]}
+        ${ccms "\n" (n: "bindsym ${mod}+${n} workspace number ${n}") (map toString (lib.range 1 8))}
+        ${ccms "\n" (n: "bindsym ${mod}+Shift+${n} move container to workspace number ${n}") (map toString (lib.range 1 8)) }
       '';
-      ".config/waybar/config".text = ''
+      ".config/waybar/config".text = let
+        workspaces = ''
+          "sway/workspaces": {
+            "disable-scroll": true,
+            "all-outputs": false,
+            "format": "{name}",
+          }
+        '';
+        audio = ''
+          "pulseaudio": {
+            "scroll-step": 5,
+            "format": "{icon}\n{format_source}",
+            "format-muted": "󰝟\n{format_source}",
+            "format-source": "",
+            "format-source-muted": "",
+            "format-icons": {
+              "default": ["", ""]
+            },
+            "tooltip": true,
+            "tooltip-format": "{volume}%"
+          }
+        '';
+        clock = ''
+          "clock": {
+            "format": "{:%H\n%M}",
+            "tooltip-format": "{:%Y-%m-%d}"
+          }
+        '';
+        network = ''
+          "network": {
+            "format-ethernet": "󰈀",
+            "format-disconnected": "",
+            "tooltip-format": "{ipaddr}/{ifname}"
+          }
+        '';
+        tray = ''
+          "tray": {
+            "icon-size": 16,
+            "spacing": 10
+          }
+        '';
+      in ''
         [
           {
             "layer": "bottom",
@@ -162,32 +195,12 @@
             "spacing": 10,
             "margin-top": 10,
             "margin-bottom": 10,
-            "margin-left": 10,
             "modules-left": [ "sway/workspaces" ],
             "modules-right": [ "pulseaudio", "clock"],
-
-            "sway/workspaces": {
-                "disable-scroll": true,
-                "all-outputs": false,
-                "format": "{name}",
-            },
-            "pulseaudio": {
-                "scroll-step": 5,
-                "format": "{icon}\n{format_source}",
-                "format-muted": "󰝟\n{format_source}",
-                "format-source": "",
-                "format-source-muted": "",
-                "format-icons": {
-                    "default": ["", ""]
-                },
-                "tooltip": true,
-                "tooltip-format": "{volume}%"
-            },
-            "clock": {
-                "format": "{:%H\n%M}",
-                "tooltip-format": "{:%Y-%m-%d}"
-            }
-            },
+            ${workspaces},
+            ${audio},
+            ${clock}
+          },
           {
             "layer": "bottom",
             "position": "right",
@@ -195,40 +208,13 @@
             "spacing": 10,
             "margin-top": 10,
             "margin-bottom": 10,
-            "margin-right": 10,
             "modules-left": [ "sway/workspaces" ],
             "modules-right": [ "tray", "network", "pulseaudio", "clock"],
-
-            "sway/workspaces": {
-                "disable-scroll": true,
-                "all-outputs": false,
-                "format": "{name}",
-            },
-            "pulseaudio": {
-                "scroll-step": 5,
-                "format": "{icon}\n{format_source}",
-                "format-muted": "󰝟\n{format_source}",
-                "format-source": "",
-                "format-source-muted": "",
-                "format-icons": {
-                    "default": ["", ""]
-                },
-                "tooltip": true,
-                "tooltip-format": "{volume}%"
-            },
-            "network": {
-                "format-ethernet": "󰈀",
-                "format-disconnected": "",
-                "tooltip-format": "{ipaddr}/{ifname}"
-            },
-            "clock": {
-                "format": "{:%H\n%M}",
-                "tooltip-format": "{:%Y-%m-%d}"
-            },
-            "tray": {
-                "icon-size": 16,
-                "spacing": 10
-            }
+            ${workspaces},
+            ${tray},
+            ${network},
+            ${audio},
+            ${clock}
           }
         ]
       '';
@@ -245,7 +231,6 @@
         window#waybar.empty #window {
             background-color: transparent;
         }
-
         #workspaces {
             padding: 0px;
             border-radius: 0px;
@@ -265,7 +250,6 @@
         #workspaces button.urgent {
             color: #${lcp.main};
         }
-
         #network,
         #pulseaudio,
         #tray,
@@ -276,7 +260,6 @@
             color: #${lcp.fg};
             padding: 2px;
         }
-
         tooltip label {
             background-color: #${lcp.bg};
             color: #${lcp.fg};

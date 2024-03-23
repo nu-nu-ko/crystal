@@ -1,4 +1,4 @@
-{ inputs, pkgs, lib, ... }:
+{ inputs, pkgs, ... }:
 {
   ### wsl int
   imports = [ inputs.wsl.nixosModules.wsl ];
@@ -10,16 +10,24 @@
     usbip.enable = true;
     startMenuLaunchers = true;
   };
-  misc = {
-    nix = {
-      config = true;
-      flakePath = "/home/nuko/crystal";
-      nh = true;
+  mods = {
+    misc = {
+      nix = {
+        config = true;
+        flakePath = "/home/nuko/crystal";
+        nh = true;
+      };
+      cleanDefaults = true;
+      nztz = true;
     };
-    cleanDefaults = true;
-    nztz = true;
+    user.main.shell.setup = true;
+    programs = {
+      neovim = true;
+      git = true;
+    };
   };
-  user.main.shell.setup = lib.mkForce true;
+  # wsl doesnt seem happy with me taking uid 1000? and we arent using agenix here either cause lazy..
+  # soooo new user def..
   users = {
     mutableUsers = false;
     users.main = {
@@ -28,22 +36,11 @@
       isNormalUser = true;
       extraGroups = [ "wheel" ];
       name = "nuko";
-      packages = builtins.attrValues {
-        inherit (pkgs)
-          wget
-          yazi
-          ;
-      };
+      packages = builtins.attrValues { inherit (pkgs) wget yazi; };
     };
-  };
-  program = {
-    htop = true;
-    neovim = true;
-    git = true;
   };
   security.sudo.execWheelOnly = true;
   networking.hostName = "portal";
-
   ### dont be silly
   system.stateVersion = "23.11";
 }

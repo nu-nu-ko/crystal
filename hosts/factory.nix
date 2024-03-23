@@ -1,35 +1,64 @@
 { pkgs, lib, ... }:
 {
-  misc = {
-    nix = {
-      config = true;
-      nh = true;
-    };
-    secrets = true;
-    cleanDefaults = true;
-    nztz = true;
-    wired = {
-      enable = true;
-      ip = "192.168.0.4";
-      card = "enp39s0";
-    };
-  };
-  user = {
-    noRoot = true;
-    main = {
-      enable = true;
-      packages = builtins.attrValues {
-        inherit (pkgs)
-          element-desktop
-          teams-for-linux
-          krita
-          imv
-          mpv
-          ueberzugpp
-          ;
-        vesktop = pkgs.vesktop.override { withTTS = false; };
+  mods = {
+    misc = {
+      nix = {
+        config = true;
+        nh = true;
       };
-      keys = [ "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFhTVx3lCAqu9xxn8kPwH0bl0Qg0cE6E0TSJILErD3mq" ];
+      secrets = true;
+      cleanDefaults = true;
+      nztz = true;
+      hostKey = true;
+      wired = {
+        enable = true;
+        ip = "192.168.0.4";
+        card = "enp39s0";
+      };
+    };
+    user = {
+      noRoot = true;
+      main = {
+        enable = true;
+        shell.setup = true;
+        packages = builtins.attrValues {
+          inherit (pkgs)
+            element-desktop
+            teams-for-linux
+            krita
+            imv
+            mpv
+            ueberzugpp
+            ;
+          vesktop = pkgs.vesktop.override { withTTS = false; };
+        };
+        keys = [ "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFhTVx3lCAqu9xxn8kPwH0bl0Qg0cE6E0TSJILErD3mq" ];
+      };
+    };
+    desktop = {
+      hyprland = true;
+      setup = {
+        audio = true;
+        rgb = true;
+        plymouth = true;
+      };
+      theme = {
+        fonts = true;
+        gtkqt = true;
+        console = true;
+      };
+      programs = {
+        alacritty = true;
+        firefox = true;
+        prism = true;
+        steam = true;
+        fuzzel = true;
+      };
+    };
+    programs = {
+      git = true;
+      ssh = true;
+      neovim = true;
     };
   };
   home.file =
@@ -44,33 +73,6 @@
       (name: {
         source = "/storage/${name}";
       });
-  desktop = {
-    hyprland = true;
-    setup = {
-      audio = true;
-      rgb = true;
-      ply = true;
-    };
-    theme = {
-      fonts = true;
-      gtkqt = true;
-      console = true;
-    };
-    program = {
-      alacritty = true;
-      firefox = true;
-      prism = true;
-      steam = true;
-      waybar = true;
-      fuzzel = true;
-    };
-  };
-  program = {
-    git = true;
-    ssh = true;
-    htop = true;
-    neovim = true;
-  };
   ### misc
   security = {
     sudo.execWheelOnly = true;
@@ -82,6 +84,7 @@
     hostId = "007f0200";
   };
   systemd = {
+    # improves boot times
     services.systemd-udev-settle.enable = false;
     network.wait-online.enable = false;
   };

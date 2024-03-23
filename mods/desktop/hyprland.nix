@@ -4,28 +4,25 @@
   nuke,
   config,
   colours,
-  inputs,
   ...
 }:
+let
+  inherit (lib) mkIf;
+  inherit (nuke) mkEnable;
+in
 {
-  options.desktop.hyprland = nuke.mkEnable;
-  config = lib.mkIf config.desktop.hyprland {
-    programs.hyprland = {
-      enable = true;
-      package = inputs.hyprland.packages.${pkgs.system}.hyprland;
-    };
-    desktop.setup.greeter = {
-      enable = true;
-      command = "Hyprland";
-    };
+  options.mods.desktop.hyprland = mkEnable;
+  config = mkIf config.mods.desktop.hyprland {
+    programs.hyprland.enable = config.mods.desktop.hyprland;
     users.users.main.packages = builtins.attrValues {
       inherit (pkgs)
         wpaperd
         hypridle
         xdg-utils
         wl-clipboard
+        hyprlock
+        fuzzel
         ;
-      hyprlock = inputs.hyprlock.packages.${pkgs.system}.hyprlock;
     };
     home.file =
       let

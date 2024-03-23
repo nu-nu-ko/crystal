@@ -15,16 +15,12 @@ Please feel free to comment on where I can improve! I really appreciate it
 - there are others I need to add I'm just lazy..
 
 ### structure oddities
-- program module(s) can only apply to the `main` user
-- many services assume others are enabled ( mostly postgresql, nginx & snoms )
-- nuke.nix ( this is super pointless )
-- most everything assumes `secrets` is enabled
+- Yeah I really like `inherits` yeah I really dislike `with`
+- assertions arent used ever despite breaking combinations being easily possible lol, I only dont do this as nothing here is intended to be cut n paste!
 
 ### potential todos
-- replace `nh` I don't make use of most of it.
-- replace `agenix` I want to learn more about how my secrets are deployed and there is a fair amount of it which I don't use, also a file per secret is messy imo.
-- move most theme resources to another flake.
-- improve the `nginx module` vhosts generation.
+- replace `nh` and `agenix` both are fine just something id like to know how to do myself.
+- move ALL theme resources and packages out of here
 
 ### extras
 - `lib/homeFiles.nix`: thanks [eclairevoyant](https://github.com/eclairevoyant)

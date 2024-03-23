@@ -1,57 +1,56 @@
 { lib, ... }:
 {
-  misc = {
-    nix = {
-      config = true;
-      flakePath = "/storage/repos/crystal";
-      nh = true;
+  mods = {
+    misc = {
+      nix = {
+        config = true;
+        flakePath = "/storage/repos/crystal";
+        nh = true;
+      };
+      secrets = true;
+      cleanDefaults = true;
+      nztz = true;
+      hostKey = true;
+      wired = {
+        enable = true;
+        ip = "192.168.0.3";
+        card = "enp6s0";
+      };
     };
-    secrets = true;
-    cleanDefaults = true;
-    nztz = true;
-    wired = {
-      enable = true;
-      ip = "192.168.0.3";
-      card = "enp6s0";
+    user = {
+      noRoot = true;
+      main = {
+        enable = true;
+        shell = {
+          setup = true;
+          prompt = "'%F{magenta}圖書館%F{reset_color} %~ %# '";
+        };
+        keys = [ "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBN4+lDQxOfTVODQS4d3Mm+y3lpzpsSkwxjbzN4NwJlJ" ];
+      };
     };
-  };
-  user = {
-    noRoot = true;
-    main = {
-      enable = true;
-      shell.prompt = "'%F{magenta}圖書館%F{reset_color} %~ %# '";
-      keys = [ "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBN4+lDQxOfTVODQS4d3Mm+y3lpzpsSkwxjbzN4NwJlJ" ];
+    programs = {
+      neovim = true;
+      git = true;
+      ssh = true;
     };
-  };
-  program = {
-    htop = true;
-    neovim = true;
-    git = true;
-    ssh = true;
-  };
-  service = {
-    web =
-      lib.genAttrs
-        [
-          "nginx"
-          "forgejo"
-          "jellyfin"
-          "qbittorrent"
-          "nextcloud"
-          "vaultwarden"
-          "synapse"
-          "navidrome"
-          "komga"
-          "grafana"
-        ]
-        (_: {
-          enable = true;
-        });
-    fail2ban = true;
-    postgresql = true;
-    mailserver = true;
-    openssh = true;
-    blocky = false;
+    services = {
+      fail2ban = true;
+      postgresql = true;
+      openssh = true;
+      prometheus = true;
+      mail = true;
+      synapse = true;
+      web = {
+        nginx.enable = true;
+        komga.enable = true;
+        navidrome.enable = true;
+        forgejo.enable = true;
+        vaultwarden.enable = true;
+        nextcloud.enable = true;
+        qbittorrent.enable = true;
+        grafana.enable = true;
+      };
+    };
   };
   ### misc
   security.sudo.execWheelOnly = true;
@@ -66,7 +65,6 @@
     };
     enableEmergencyMode = false;
   };
-  #environment.noXlibs = lib.mkDefault true;
   ### networking
   networking = {
     domain = "shimeji.cafe";

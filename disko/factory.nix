@@ -1,13 +1,12 @@
 {
-  disko.devices =
-    let
-      nvme1 = "/dev/disk/by-id/nvme-Samsung_SSD_980_500GB_S64DNF0R716711A";
-      #nvme2 = "/dev/disk/by-id/nvme-Samsung_SSD_980_500GB_S64DNF0R716712D";
-      sata1 = "/dev/disk/by-id/ata-Samsung_SSD_860_EVO_1TB_S3YBNB0N912941N";
-      sata2 = "/dev/disk/by-id/ata-Samsung_SSD_870_EVO_1TB_S6P5NX0T317019K";
-    in
-    {
-      disk = {
+  disko.devices = {
+      disk = 
+      let
+        nvme1 = "/dev/disk/by-id/nvme-Samsung_SSD_980_500GB_S64DNF0R716711A";
+        sata1 = "/dev/disk/by-id/ata-Samsung_SSD_860_EVO_1TB_S3YBNB0N912941N";
+        sata2 = "/dev/disk/by-id/ata-Samsung_SSD_870_EVO_1TB_S6P5NX0T317019K";
+      in
+      {
         nvme1 = {
           type = "disk";
           device = "${nvme1}";

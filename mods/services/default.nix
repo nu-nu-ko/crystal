@@ -188,10 +188,10 @@ in
           enable = postgresql;
         };
         ### openssh
-        openssh = mkIf openssh {
-          enable = true;
-          openFirewall = true;
-          settings = {
+        openssh = {
+          enable = openssh;
+          openFirewall = openssh;
+          settings = mkIf openssh {
             PermitRootLogin = "no";
             PasswordAuthentication = false;
             LogLevel = "VERBOSE";

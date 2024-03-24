@@ -44,7 +44,6 @@ in
     };
   };
   config = {
-    ### wired
     networking = mkIf wired.enable {
       enableIPv6 = false;
       useDHCP = false;
@@ -67,7 +66,6 @@ in
         routes = [ { routeConfig.Gateway = "192.168.0.1"; } ];
       };
     };
-    ### hostkey setup
     services.openssh.hostKeys = mkIf hostKey [
       {
         comment = "${config.networking.hostName} host";
@@ -75,17 +73,19 @@ in
         type = "ed25519";
       }
     ];
-    ### secrets setup
-    environment.systemPackages = mkIf secrets [ agenix.packages.${pkgs.system}.default ];
+    environment = {
+      systemPackages = mkIf secrets [ agenix.packages.${pkgs.system}.default ];
+      defaultPackages = mkIf cleanDefaults [ ];
+      etc."nix/inputs/nixpkgs".source = mkIf nix.config nixpkgs.outPath;
+      sessionVariables.FLAKE = mkIf nix.config nix.flakePath;
+    };
     age.identityPaths = mkIf secrets [ "/home/${config.users.users.main.name}/.ssh/id_ed25519" ];
-    ### clean
     programs = mkIf cleanDefaults {
       nano.enable = false;
       command-not-found.enable = false;
       bash.enableCompletion = false;
     };
     xdg.sounds.enable = mkIf cleanDefaults false;
-    environment.defaultPackages = mkIf cleanDefaults [ ];
     documentation = mkIf cleanDefaults {
       enable = false;
       doc.enable = false;
@@ -93,10 +93,8 @@ in
       nixos.enable = false;
     };
     boot.enableContainers = mkIf cleanDefaults false;
-    ### timezone
     time.timeZone = mkIf nztz "NZ";
     i18n.defaultLocale = mkIf nztz "en_NZ.UTF-8";
-    ### nix
     nix = mkIf nix.config {
       settings = {
         experimental-features = [
@@ -125,10 +123,6 @@ in
       hostPlatform = "x86_64-linux";
       config.allowUnfree = true;
     };
-    environment = {
-      etc."nix/inputs/nixpkgs".source = nixpkgs.outPath;
-      sessionVariables.FLAKE = nix.flakePath;
-    };
-    users.users.main.packages = optionals (nix.nh) [ pkgs.nh ];
+    users.users.main.packages = optionals nix.nh [ pkgs.nh ];
   };
 }

@@ -37,7 +37,7 @@
           setup = mkEnable;
           prompt = mkOption {
             type = lines;
-            default = "`%~ %# '";
+            default = "'%~ %# '";
           };
         };
       };

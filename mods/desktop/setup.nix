@@ -33,14 +33,15 @@ in
   };
   config =
     let
-      inherit (config.mods.desktop.setup)
+      inherit (config.mods.desktop) setup theme programs;
+      inherit (setup)
         audio
         greeter
         rgb
         plymouth
         ;
-      inherit (config.mods.desktop.theme) fonts gtkqt console;
-      inherit (config.mods.desktop.programs)
+      inherit (theme) fonts gtkqt console;
+      inherit (programs)
         prism
         steam
         alacritty
@@ -55,7 +56,6 @@ in
           pkgs.capitaine-cursors-themed
           pkgs.gruvbox-dark-gtk
           pkgs.gruvbox-dark-icons-gtk
-          pkgs.kde-gruvbox
         ]
         ++ optionals steam [
           pkgs.protontricks
@@ -65,156 +65,154 @@ in
         ++ optionals alacritty [ pkgs.alacritty ];
 
       ### steam
-      programs.steam = mkIf steam {
-        enable = true;
-        package = pkgs.steam.override {
+      programs = {
+        firefox = mkIf firefox {
+          enable = firefox;
+          package = pkgs.firefox.override { cfg.speechSynthesisSupport = false; };
+          policies = {
+            Preferences = {
+              "gfx.webrender.all" = true;
+              "browser.aboutConfig.showWarning" = true;
+              "browser.tabs.firefox-view" = true;
+              "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
+              "svg.context-properties.content.enabled" = true;
+              "layout.css.has-selector.enabled" = true;
+              "privacy.firstparty.isolate" = true;
+              "browser.EULA.override" = true;
+              "browser.tabs.inTitlebar" = 0;
+            };
+            CaptivePortal = false;
+            DisableFirefoxStudies = true;
+            DisablePocket = true;
+            DisableTelemetry = true;
+            DisableFirefoxAccounts = true;
+            DisableProfileImport = true;
+            DisableSetDesktopBackground = true;
+            DisableFeedbackCommands = true;
+            DisableFirefoxScreenshots = true;
+            DontCheckDefaultBrowser = true;
+            NoDefaultBookmarks = true;
+            PasswordManagerEnabled = false;
+            FirefoxHome = {
+              Pocket = false;
+              Snippets = false;
+              TopSites = false;
+              Highlights = false;
+              Locked = true;
+            };
+            UserMessaging = {
+              ExtensionRecommendations = false;
+              SkipOnboarding = true;
+            };
+            Cookies = {
+              Behavior = "accept";
+              Locked = false;
+            };
+            ExtensionSettings =
+              let
+                addons = "https://addons.mozilla.org/firefox/downloads/file/";
+                installation_mode = "force_installed";
+              in
+              {
+                "uBlock0@raymondhill.net" = {
+                  inherit installation_mode;
+                  install_url = "${addons}4188488/ublock_origin-1.55.0.xpi";
+                };
+                "{446900e4-71c2-419f-a6a7-df9c091e268b}" = {
+                  inherit installation_mode;
+                  install_url = "${addons}4180072/bitwarden_password_manager-2024.2.0.xpi";
+                };
+                "sponsorBlocker@ajay.app" = {
+                  inherit installation_mode;
+                  install_url = "${addons}4178444/sponsorblock-5.5.4.xpi";
+                };
+                "Tab-Session-Manager@sienori" = {
+                  inherit installation_mode;
+                  install_url = "${addons}4165190/tab_session_manager-6.12.2.xpi";
+                };
+              };
+          };
+        };
+        steam = mkIf steam {
+          enable = steam;
           # required for source1 games.
-          extraLibraries = pkgs: [
-            pkgs.wqy_zenhei
-            pkgs.pkgsi686Linux.gperftools
-          ];
+          package = pkgs.steam.override {
+            extraLibraries = pkgs: [
+              pkgs.wqy_zenhei
+              pkgs.pkgsi686Linux.gperftools
+            ];
+          };
         };
       };
-      hardware = mkIf steam {
-        xone.enable = true;
-        opengl.driSupport32Bit = true;
+      hardware = {
+        xone.enable = steam;
+        opengl.driSupport32Bit = steam;
       };
 
       environment.etc =
-        mkIf prism {
+        {
           # gives a reliable path for the jdks
-          "jdks/17".source = pkgs.openjdk17 + /bin;
-          "jdks/8".source = pkgs.openjdk8 + /bin;
+          "jdks/17".source = mkIf prism pkgs.openjdk17 + /bin;
+          "jdks/8".source = mkIf prism pkgs.openjdk8 + /bin;
         }
         // mkIf gtkqt {
-          # honestly might be useless
           "xdg/gtk-3.0/settings.ini".text = ''
             [Settings]
             gtk-cursor-theme-name=phinger-cursors
             gtk-font-name=SF Pro Text 12
-            gtk-icon-theme-name=Flat-Remix-Purple-Dark
-            gtk-theme-name=phocus-mountain
+            gtk-icon-theme-name=gruvbox-dark-icons
+            gtk-theme-name=gruvbox-dark
           '';
         };
-      home.file = {
-        ".config/alacritty/alacritty.toml".source = (pkgs.formats.toml { }).generate "alacritty.toml" {
-          colors =
-            let
-              inherit (colours) accent alpha;
-              inherit (colours.primary) bg fg;
-            in
-            {
-              bright = builtins.mapAttrs (_: prev: "#${prev}") (accent);
-              normal = builtins.mapAttrs (_: prev: "#${prev}") (alpha);
-              primary = {
-                background = "#${bg}";
-                bright_foreground = "#${fg}";
-                dim_foreground = "#${fg}";
-              };
-            };
-          cursor = {
-            style = "Underline";
-            unfocused_hollow = false;
-          };
-          window = {
-            dynamic_padding = false;
-            dynamic_title = true;
-            opacity = 1;
-            padding = {
-              x = 8;
-              y = 8;
-            };
-          };
-        };
-        ".config/fuzzel/fuzzel.ini" = mkIf fuzzel {
-          source = (pkgs.formats.ini { }).generate "fuzzel.ini" {
+      home.file =
+        let
+          inherit (pkgs.formats) toml ini;
+        in
+        {
+          ".config/alacritty/alacritty.toml".source = (toml { }).generate "alacritty.toml" {
             colors = {
-              background = primary.bg + "FF";
-              text = primary.fg + "FF";
-              match = primary.main + "FF";
-              border = primary.main + "FF";
-            };
-          };
-        };
-        ".mozilla/firefox/profiles.ini".text = ''
-          [Profile0]
-          Name=${config.users.users.main.name}
-          Path=${config.users.users.main.name}
-          Default=1
-          IsRelative=1
-          [General]
-          Version=2
-        '';
-      };
-
-      programs.firefox = mkIf firefox {
-        enable = firefox;
-        package = pkgs.firefox.override { cfg.speechSynthesisSupport = false; };
-        policies = {
-          Preferences = {
-            "gfx.webrender.all" = true;
-            "browser.aboutConfig.showWarning" = true;
-            "browser.tabs.firefox-view" = true;
-            "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
-            "svg.context-properties.content.enabled" = true;
-            "layout.css.has-selector.enabled" = true;
-            "privacy.firstparty.isolate" = true;
-            "browser.EULA.override" = true;
-            "browser.tabs.inTitlebar" = 0;
-          };
-          CaptivePortal = false;
-          DisableFirefoxStudies = true;
-          DisablePocket = true;
-          DisableTelemetry = true;
-          DisableFirefoxAccounts = true;
-          DisableProfileImport = true;
-          DisableSetDesktopBackground = true;
-          DisableFeedbackCommands = true;
-          DisableFirefoxScreenshots = true;
-          DontCheckDefaultBrowser = true;
-          NoDefaultBookmarks = true;
-          PasswordManagerEnabled = false;
-          FirefoxHome = {
-            Pocket = false;
-            Snippets = false;
-            TopSites = false;
-            Highlights = false;
-            Locked = true;
-          };
-          UserMessaging = {
-            ExtensionRecommendations = false;
-            SkipOnboarding = true;
-          };
-          Cookies = {
-            Behavior = "accept";
-            Locked = false;
-          };
-          ExtensionSettings =
-            let
-              addons = "https://addons.mozilla.org/firefox/downloads/file/";
-              installation_mode = "force_installed";
-            in
-            {
-              "uBlock0@raymondhill.net" = {
-                inherit installation_mode;
-                install_url = "${addons}4188488/ublock_origin-1.55.0.xpi";
-              };
-              "{446900e4-71c2-419f-a6a7-df9c091e268b}" = {
-                inherit installation_mode;
-                install_url = "${addons}4180072/bitwarden_password_manager-2024.2.0.xpi";
-              };
-              "sponsorBlocker@ajay.app" = {
-                inherit installation_mode;
-                install_url = "${addons}4178444/sponsorblock-5.5.4.xpi";
-              };
-              "Tab-Session-Manager@sienori" = {
-                inherit installation_mode;
-                install_url = "${addons}4165190/tab_session_manager-6.12.2.xpi";
+              bright = builtins.mapAttrs (_: prev: "#${prev}") accent;
+              normal = builtins.mapAttrs (_: prev: "#${prev}") alpha;
+              primary = {
+                background = "#${primary.bg}";
+                bright_foreground = "#${primary.fg}";
+                dim_foreground = "#${primary.fg}";
               };
             };
+            cursor = {
+              style = "Underline";
+              unfocused_hollow = false;
+            };
+            window = {
+              dynamic_padding = false;
+              dynamic_title = true;
+              opacity = 1;
+              padding = {
+                x = 8;
+                y = 8;
+              };
+            };
+          };
+          ".config/fuzzel/fuzzel.ini" = mkIf fuzzel {
+            source = (ini { }).generate "fuzzel.ini" {
+              colors = {
+                background = primary.bg + "FF";
+                text = primary.fg + "FF";
+                match = primary.main + "FF";
+                border = primary.main + "FF";
+              };
+            };
+          };
+          ".mozilla/firefox/profiles.ini".text = ''
+            [Profile0]
+            Name=${config.users.users.main.name}
+            Path=${config.users.users.main.name}
+            Default=1
+            IsRelative=1
+            [General]
+            Version=2
+          '';
         };
-      };
-
       services = {
         # greeter
         greetd = {
@@ -269,8 +267,8 @@ in
           {
             settings."org/gnome/desktop/interface" = {
               color-scheme = "prefer-dark";
-              gtk-theme = "phocus-mountain";
-              icon-theme = "Flat-Remix-Purple-Dark";
+              gtk-theme = "gruvbox-dark";
+              icon-theme = "grubbox-dark-icons";
               cursor-theme = "phinger-cursors";
               font-name = "SF Pro Text 12";
               monospace-font-name = "Liga SFMono Nerd Font";

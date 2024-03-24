@@ -71,13 +71,6 @@
     hostName = "library";
     hostId = "9a350e7b";
   };
-  services.openssh.hostKeys = [
-    {
-      comment = "library host";
-      path = "/etc/ssh/library_ed25519_key";
-      type = "ed25519";
-    }
-  ];
   ### hardware
   hardware = {
     enableRedistributableFirmware = true;

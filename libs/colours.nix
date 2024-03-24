@@ -1,4 +1,4 @@
-{ ... }:
+_:
 {
   _module.args.colours = {
     primary = {

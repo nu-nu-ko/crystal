@@ -41,6 +41,7 @@
         audio = true;
         rgb = true;
         plymouth = true;
+        greeter = true;
       };
       theme = {
         fonts = true;
@@ -59,6 +60,7 @@
       git = true;
       ssh = true;
       neovim = true;
+      htop = true;
     };
   };
   home.file =
@@ -88,13 +90,6 @@
     services.systemd-udev-settle.enable = false;
     network.wait-online.enable = false;
   };
-  services.openssh.hostKeys = [
-    {
-      comment = "factory host";
-      path = "/etc/ssh/factory_ed25519_key";
-      type = "ed25519";
-    }
-  ];
   # hardware
   powerManagement.cpuFreqGovernor = "schedutil";
   hardware = {

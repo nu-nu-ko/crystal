@@ -20,20 +20,19 @@ in
         let
           forceSSL = true;
           enableACME = true;
-
           genHosts =
-            list:
-            genAttrs' list (
+            i:
+            genAttrs' i (
               x:
               let
                 inherit (cfg.${x}) enable dns port;
               in
               {
                 name = "${dns}.${domain}";
-                value = ({
+                value = {
                   locations."/".proxyPass = mkIf enable "http://localhost:${toString port}";
                   inherit forceSSL enableACME;
-                });
+                };
               }
             );
         in

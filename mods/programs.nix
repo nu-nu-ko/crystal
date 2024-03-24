@@ -6,6 +6,7 @@
   ...
 }:
 let
+  ### neovim...
   mynv =
     let
       con = pkgs.neovimUtils.makeNeovimConfig {
@@ -54,7 +55,7 @@ let
           o.splitbelow = true
           o.laststatus = 0
           o.cmdheight = 0
-          vim.cmd.colorscheme 'mountain'
+          vim.cmd.colorscheme 'gruvbox'
           vim.api.nvim_command("autocmd TermOpen * startinsert")
           vim.api.nvim_command("autocmd TermOpen * setlocal nonumber norelativenumber")
           require('nvim-tree').setup {
@@ -84,15 +85,22 @@ let
       ];
     in
     pkgs.wrapNeovimUnstable pkgs.neovim-unwrapped (con // { inherit wrapperArgs; });
+  ###
   inherit (nuke) mkEnable;
   inherit (lib) mkIf;
-  inherit (config.mods.programs) git ssh neovim;
+  inherit (config.mods.programs)
+    git
+    ssh
+    neovim
+    htop
+    ;
 in
 {
   options.mods.programs = {
     neovim = mkEnable;
     git = mkEnable;
     ssh = mkEnable;
+    htop = mkEnable;
   };
   config = {
     users.users.main.packages = mkIf neovim [ mynv ];
@@ -132,6 +140,22 @@ in
             publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICLJR5DDyMYyKoUaZDML29f1AEJZ98nfizrdJ8jCLP6h";
           };
           "github.com".publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl";
+        };
+      };
+      htop = mkIf htop {
+        enable = true;
+        settings = {
+          hide_kernel_threads = true;
+          hide_userland_threads = true;
+          shadow_other_users = true;
+          show_program_path = false;
+          hide_function_bar = 2;
+          header_layout = "two_50_50";
+          column_meters_0 = "LeftCPUs4 CPU MemorySwap";
+          column_meter_modes_0 = "1 1 1";
+          column_meters_1 = "RightCPUs4 NetworkIO DiskIO";
+          column_meter_modes_1 = "1 2 2";
+          tree_view = true;
         };
       };
     };

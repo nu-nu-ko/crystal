@@ -1,16 +1,16 @@
 {
-  pkgs,
-  lib,
-  nuke,
   config,
+  pkgs,
+  _lib,
+  lib,
   ...
 }:
 {
-  options.mods.user =
+  options._user =
     let
-      inherit (nuke) mkEnable;
-      inherit (lib) mkOption;
-      inherit (lib.types)
+      inherit (_lib) mkEnable;
+      inherit (lib) mkOption types;
+      inherit (types)
         str
         listOf
         package
@@ -18,18 +18,14 @@
         ;
     in
     {
-      noRoot = mkEnable;
-      main = {
+      disableRoot = mkEnable;
+      mainUser = {
         enable = mkEnable;
-        name = mkOption {
-          type = str;
-          default = "nuko";
-        };
         packages = mkOption {
           type = listOf package;
           default = [ ];
         };
-        keys = mkOption {
+        loginKeys = mkOption {
           type = listOf str;
           default = [ ];
         };
@@ -44,47 +40,37 @@
     };
   config =
     let
-      inherit (lib)
-        mkIf
-        mkForce
-        mkDefault
-        getExe
-        ;
-      inherit (config.mods.user) main noRoot;
-      inherit (main) shell;
+      inherit (lib) mkIf mkDefault mkForce;
+      inherit (config._user) mainUser disableRoot;
     in
     {
-      age.secrets.user = mkIf main.enable {
-        file = ../shhh/user.age;
-        owner = main.name;
+      age.secrets.user = mkIf mainUser.enable {
+        file = ../assets/age/user.age;
+        owner = config.users.users.main.name;
       };
       users = {
-        mutableUsers = mkDefault false;
+        mutableUsers = mkIf mainUser.enable true;
         users = {
-          ### disableRoot
-          root = mkIf noRoot {
-            hashedPassword = mkDefault "!";
-            shell = mkForce pkgs.shadow;
-            home = mkDefault "/home/root"; # for sudo.
-          };
-          ### configure main user
-          main = mkIf main.enable {
+          main = mkIf mainUser.enable {
+            name = "nuko";
             uid = 1000;
             isNormalUser = true;
             extraGroups = [ "wheel" ];
             hashedPasswordFile = config.age.secrets.user.path;
-            inherit (main) name;
-            packages = builtins.attrValues { inherit (pkgs) wget yazi eza; } ++ main.packages;
-            openssh.authorizedKeys.keys = main.keys;
-            ### shell setup
-            shell = mkIf shell.setup pkgs.zsh;
+            openssh.authorizedKeys.keys = mainUser.loginKeys;
+            shell = mkIf mainUser.shell.setup pkgs.zsh;
+            packages = builtins.attrValues { inherit (pkgs) wget yazi eza; } ++ mainUser.packages;
+          };
+          root = mkIf disableRoot {
+            hashedPassword = mkDefault "!"; # cannot eval.
+            home = mkDefault "/home/root"; # for sudo use.
+            shell = mkForce pkgs.shadow;
           };
         };
       };
-      ### shell setup
-      environment = mkIf shell.setup {
+      environment = mkIf mainUser.shell.setup {
         shells = [ pkgs.zsh ];
-        binsh = getExe pkgs.dash;
+        binsh = lib.getExe pkgs.dash;
         variables = {
           XDG_DATA_HOME = ''"$HOME"/.local/share'';
           XDG_CONFIG_HOME = ''"$HOME"/.config'';
@@ -92,38 +78,40 @@
           XDG_CACHE_HOME = ''"$HOME"/.cache'';
         };
       };
-      programs.zsh = mkIf shell.setup {
-        enable = shell.setup;
-        autosuggestions.enable = true;
-        syntaxHighlighting.enable = true;
-        histSize = 10000;
-        histFile = "$HOME/.cache/zsh_history";
-        shellInit = ''
-          zsh-newuser-install() { :; }
-          bindkey "^[[1;5C" forward-word
-          bindkey "^[[1;5D" backward-word
-          bindkey '^H' backward-kill-word
-          bindkey '5~' kill-word
-          (( ''${+ZSH_HIGHLIGHT_STYLES} )) || typeset -A ZSH_HIGHLIGHT_STYLES
-          ZSH_HIGHLIGHT_STYLES[path]=none
-          ZSH_HIGHLIGHT_STYLES[path_prefix]=none
-          nr() {
-            nix run nixpkgs#$1 -- ''${@:2}
-          }
-          ns() {
-            nix shell nixpkgs#''${^@}
-          }
-        '';
-        shellAliases = {
-          ls = "eza";
-          lg = "eza -lag";
-          nf = "nix flake";
-          no = "nh os";
-          grep = "grep --color=auto";
-          library = "ssh 192.168.0.3";
-          pass = "wl-copy < /home/${config.users.users.main.name}/Documents/vault";
+      programs.zsh =
+        let
+          inherit (mainUser.shell) setup prompt;
+        in
+        mkIf setup {
+          enable = true;
+          promptInit = "PROMPT=${prompt}";
+          shellAliases = {
+            ls = "eza";
+            lg = "eza -lag";
+            nf = "nix flake";
+            library = "ssh 192.168.0.3";
+            pass = "wl-copy < /home/${config.users.users.main.name}/Documents/vault";
+          };
+          shellInit = ''
+            nr() {
+              nix run nixpkgs#$1 -- ''${@:2}
+            }
+            ns() {
+              nix shell nixpkgs#''${^@}
+            }
+            bindkey "^[[1;5C" forward-word
+            bindkey "^[[1;5D" backward-word
+            bindkey '^H' backward-kill-word
+            bindkey '5~' kill-word
+            (( ''${+ZSH_HIGHLIGHT_STYLES} )) || typeset -A ZSH_HIGHLIGHT_STYLES
+            ZSH_HIGHLIGHT_STYLES[path]=none
+            ZSH_HIGHLIGHT_STYLES[path_prefix]=none
+            zsh-newuser-install() { :; }
+          '';
+          autosuggestions.enable = true;
+          syntaxHighlighting.enable = true;
+          histFile = "$HOME/.cache/zsh_history";
+          histSize = 10000;
         };
-        promptInit = "PROMPT=${shell.prompt}";
-      };
     };
 }

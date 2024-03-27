@@ -1,6 +1,6 @@
 {
   disko.devices = {
-      disk = 
+    disk =
       let
         nvme1 = "/dev/disk/by-id/nvme-Samsung_SSD_980_500GB_S64DNF0R716711A";
         sata1 = "/dev/disk/by-id/ata-Samsung_SSD_860_EVO_1TB_S3YBNB0N912941N";
@@ -71,33 +71,33 @@
           };
         };
       };
-      zpool = {
-        rpool = {
-          type = "zpool";
-          rootFsOptions = {
-            compression = "zstd";
-            xattr = "sa";
-            mountpoint = "none";
-          };
-          datasets."root" = {
-            type = "zfs_fs";
-            options.mountpoint = "legacy";
-            mountpoint = "/";
-          };
+    zpool = {
+      rpool = {
+        type = "zpool";
+        rootFsOptions = {
+          compression = "zstd";
+          xattr = "sa";
+          mountpoint = "none";
         };
-        spool = {
-          type = "zpool";
-          rootFsOptions = {
-            compression = "zstd";
-            xattr = "sa";
-            mountpoint = "none";
-          };
-          datasets."storage" = {
-            type = "zfs_fs";
-            options.mountpoint = "legacy";
-            mountpoint = "/storage";
-          };
+        datasets."root" = {
+          type = "zfs_fs";
+          options.mountpoint = "legacy";
+          mountpoint = "/";
+        };
+      };
+      spool = {
+        type = "zpool";
+        rootFsOptions = {
+          compression = "zstd";
+          xattr = "sa";
+          mountpoint = "none";
+        };
+        datasets."storage" = {
+          type = "zfs_fs";
+          options.mountpoint = "legacy";
+          mountpoint = "/storage";
         };
       };
     };
+  };
 }

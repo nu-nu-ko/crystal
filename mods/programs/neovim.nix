@@ -1,22 +1,16 @@
 {
   config,
+  _lib,
   lib,
-  nuke,
   pkgs,
   ...
 }:
 let
-  ### neovim...
   mynv =
     let
       con = pkgs.neovimUtils.makeNeovimConfig {
         plugins = builtins.attrValues {
-          inherit (pkgs.vimPlugins)
-            nvim-lspconfig
-            nvim-tree-lua
-            nvim-web-devicons
-            gruvbox-nvim
-            ;
+          inherit (pkgs.vimPlugins) nvim-lspconfig nvim-tree-lua nvim-web-devicons;
         };
         withPython3 = false;
         withRuby = false;
@@ -55,7 +49,6 @@ let
           o.splitbelow = true
           o.laststatus = 0
           o.cmdheight = 0
-          vim.cmd.colorscheme 'gruvbox'
           vim.api.nvim_command("autocmd TermOpen * startinsert")
           vim.api.nvim_command("autocmd TermOpen * setlocal nonumber norelativenumber")
           require('nvim-tree').setup {
@@ -85,79 +78,14 @@ let
       ];
     in
     pkgs.wrapNeovimUnstable pkgs.neovim-unwrapped (con // { inherit wrapperArgs; });
-  ###
-  inherit (nuke) mkEnable;
-  inherit (lib) mkIf;
-  inherit (config.mods.programs)
-    git
-    ssh
-    neovim
-    htop
-    ;
 in
 {
-  options.mods.programs = {
-    neovim = mkEnable;
-    git = mkEnable;
-    ssh = mkEnable;
-    htop = mkEnable;
-  };
-  config = {
-    users.users.main.packages = mkIf neovim [ mynv ];
-    environment.variables = mkIf neovim {
+  options._programs.neovim = _lib.mkEnable;
+  config = lib.mkIf config._programs.neovim {
+    users.users.main.packages = [ mynv ];
+    environment.variables = {
       EDITOR = "nvim";
       VISUAL = "nvim";
-    };
-    programs = {
-      ### git
-      git = mkIf git {
-        enable = true;
-        config = {
-          init.defaultBranch = "main";
-          push.autoSetupRemote = true;
-          user = {
-            name = "nuko";
-            email = "nuko@shimeji.cafe";
-            signingkey = "/home/${config.users.users.main.name}/.ssh/id_ed25519.pub";
-          };
-          gpg.format = "ssh";
-          commit.gpgsign = true;
-        };
-      };
-      ### ssh
-      ssh = mkIf ssh {
-        knownHosts = {
-          library = {
-            extraHostNames = [
-              "tea.shimeji.cafe"
-              "192.168.0.3"
-              "119.224.63.166"
-            ];
-            publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIE+1CxNCNvstjiRJFgJHVgqb/Mm1MJZOSoahwzgGXHMH";
-          };
-          factory = {
-            extraHostNames = [ "192.168.0.4" ];
-            publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICLJR5DDyMYyKoUaZDML29f1AEJZ98nfizrdJ8jCLP6h";
-          };
-          "github.com".publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl";
-        };
-      };
-      htop = mkIf htop {
-        enable = true;
-        settings = {
-          hide_kernel_threads = true;
-          hide_userland_threads = true;
-          shadow_other_users = true;
-          show_program_path = false;
-          hide_function_bar = 2;
-          header_layout = "two_50_50";
-          column_meters_0 = "LeftCPUs4 CPU MemorySwap";
-          column_meter_modes_0 = "1 1 1";
-          column_meters_1 = "RightCPUs4 NetworkIO DiskIO";
-          column_meter_modes_1 = "1 2 2";
-          tree_view = true;
-        };
-      };
     };
   };
 }

@@ -1,80 +1,64 @@
 { pkgs, lib, ... }:
 {
-  mods = {
-    misc = {
-      nix = {
-        config = true;
-        nh = true;
-      };
-      secrets = true;
-      cleanDefaults = true;
-      nztz = true;
-      hostKey = true;
-      wired = {
-        enable = true;
-        ip = "192.168.0.4";
-        card = "enp39s0";
-      };
+  _common = {
+    nix = {
+      config = true;
+      nh = true;
     };
-    user = {
-      noRoot = true;
-      main = {
-        enable = true;
-        shell.setup = true;
-        packages = builtins.attrValues {
-          inherit (pkgs)
-            element-desktop
-            teams-for-linux
-            krita
-            imv
-            mpv
-            ueberzugpp
-            ;
-          vesktop = pkgs.vesktop.override { withTTS = false; };
-        };
-        keys = [ "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFhTVx3lCAqu9xxn8kPwH0bl0Qg0cE6E0TSJILErD3mq" ];
-      };
-    };
-    desktop = {
-      hyprland = true;
-      setup = {
-        audio = true;
-        rgb = true;
-        plymouth = true;
-        greeter = true;
-      };
-      theme = {
-        fonts = true;
-        gtkqt = true;
-        console = true;
-      };
-      programs = {
-        alacritty = true;
-        firefox = true;
-        prism = true;
-        steam = true;
-        fuzzel = true;
-      };
-    };
-    programs = {
-      git = true;
-      ssh = true;
-      neovim = true;
-      htop = true;
+    agenix.setup = true;
+    cleanup = true;
+  };
+  _system = {
+    timeZone.NZ = true;
+    setHostKey = true;
+    wired = {
+      enable = true;
+      ip = "192.168.0.4";
+      name = "enp39s0";
     };
   };
-  home.file =
-    lib.genAttrs
-      [
-        "Documents"
-        "Downloads"
-        "Pictures"
-        "Videos"
-        "Repos"
-      ]
-      (name: {
-        source = "/storage/${name}";
-      });
+  _user = {
+    disableRoot = true;
+    mainUser = {
+      enable = true;
+      shell.setup = true;
+      packages = builtins.attrValues {
+        inherit (pkgs)
+          element-desktop
+          teams-for-linux
+          krita
+          imv
+          mpv
+          ueberzugpp
+          ;
+        vesktop = pkgs.vesktop.override { withTTS = false; };
+      };
+      loginKeys = [ "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFhTVx3lCAqu9xxn8kPwH0bl0Qg0cE6E0TSJILErD3mq" ];
+    };
+  };
+  _programs = {
+    alacritty = true;
+    firefox = true;
+    steam = true;
+    prismlauncher = true;
+    git = true;
+    ssh = true;
+    neovim = true;
+    htop = true;
+  };
+  _desktop = true;
+  #_homeFile =
+  #  lib.genAttrs
+  #    [
+  #      "Documents"
+  #      "Downloads"
+  #      "Pictures"
+  #      "Videos"
+  #      "Repos"
+  #    ]
+  #    (name: {
+  #      source = "/storage/${name}";
+  #    });
   ### misc
   security = {
     sudo.execWheelOnly = true;
@@ -101,27 +85,25 @@
     kernelModules = [
       "kvm-amd"
       "amd_pstate"
+      "amdgpu"
     ];
     kernelParams = [ "amd_pstate=guided" ];
     loader = {
       timeout = 0; # hold space to open the menu.
       systemd-boot.enable = true;
     };
-    initrd = {
-      systemd.enable = true;
-      kernelModules = [ "amdgpu" ];
-      availableKernelModules = [
-        "nvme"
-        "xhci_pci"
-        "ahci"
-        "usbhid"
-        "usb_storage"
-        "sd_mod"
-      ];
-    };
+    initrd.systemd.enable = true;
     supportedFilesystems = [ "zfs" ];
   };
   fileSystems = {
+    "/" = {
+      device = "rpool/root";
+      fsType = "zfs";
+    };
+    "/storage" = {
+      device = "spool/storage";
+      fsType = "zfs";
+    };
     "/boot" = {
       device = "/dev/disk/by-id/nvme-Samsung_SSD_980_500GB_S64DNF0R716711A-part1";
       fsType = "vfat";
@@ -132,14 +114,6 @@
         "dmask=0077"
         "x-systemd.automount"
       ];
-    };
-    "/" = {
-      device = "rpool/root";
-      fsType = "zfs";
-    };
-    "/storage" = {
-      device = "spool/storage";
-      fsType = "zfs";
     };
   };
   swapDevices = [ { device = "/dev/disk/by-id/nvme-Samsung_SSD_980_500GB_S64DNF0R716711A-part2"; } ];

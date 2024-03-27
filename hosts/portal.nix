@@ -1,41 +1,42 @@
 { inputs, pkgs, ... }:
+let
+  name = "nuko";
+in
 {
   ### wsl int
   imports = [ inputs.wsl.nixosModules.wsl ];
   wsl = {
     enable = true;
-    defaultUser = "nuko";
-    wslConf.user.default = "nuko";
+    defaultUser = name;
+    wslConf.user.default = name;
     useWindowsDriver = true;
     usbip.enable = true;
     startMenuLaunchers = true;
   };
-  mods = {
-    misc = {
-      nix = {
-        config = true;
-        flakePath = "/home/nuko/crystal";
-        nh = true;
-      };
-      cleanDefaults = true;
-      nztz = true;
+  _common = {
+    nix = {
+      config = true;
+      flakePath = "/home/${name}/crystal";
+      nh = true;
     };
-    user.main.shell.setup = true;
-    programs = {
-      neovim = true;
-      git = true;
-    };
+    cleanup = true;
+  };
+  _system.timeZone.NZ = true;
+  _user.mainUser.shell.setup = true;
+  _programs = {
+    neovim = true;
+    git = true;
   };
   # wsl doesnt seem happy with me taking uid 1000? and we arent using agenix here either cause lazy..
   # soooo new user def..
   users = {
     mutableUsers = false;
     users.main = {
+      inherit name;
       hashedPassword = "$y$j9T$9CtCHeGALxxXBPyMXMgey0$/JZcbnVI78ScTlGtn.P1BAnRGreo8WsXG1Yr4dj7JM2";
       uid = 1001;
       isNormalUser = true;
       extraGroups = [ "wheel" ];
-      name = "nuko";
       packages = builtins.attrValues { inherit (pkgs) wget yazi; };
     };
   };

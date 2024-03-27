@@ -1,24 +1,29 @@
 {
   config,
-  lib,
   pkgs,
+  lib,
   ...
 }:
 let
-  inherit (builtins) replaceStrings;
-  inherit (lib.attrsets) mapAttrsToList;
-  inherit (lib.lists) flatten;
-  inherit (lib.modules) mkIf mkDefault mkDerivedConfig;
-  inherit (lib.options) mkOption;
-  inherit (lib.types)
-    attrsOf
-    lines
-    nullOr
-    path
-    str
-    submodule
-    ;
+  inherit (lib) mkOption;
   _tmpfileType =
+    let
+      inherit (builtins) replaceStrings;
+      inherit (lib)
+        mkIf
+        mkDerivedConfig
+        mkDefault
+        types
+        ;
+      inherit (types)
+        attrsOf
+        lines
+        nullOr
+        path
+        str
+        submodule
+        ;
+    in
     prefix:
     attrsOf (
       submodule (
@@ -48,17 +53,16 @@ let
     );
 in
 {
-  options = {
-    home.file = mkOption {
-      default = { };
-      type = _tmpfileType "homeFile";
-    };
+  options._homeFile = mkOption {
+    default = { };
+    type = _tmpfileType "homeFile";
   };
   config.systemd.user.tmpfiles.users.main.rules =
     let
+      inherit (lib) mapAttrsToList flatten;
       _tmpStr =
         prefix: _: file:
-        "L+ '${prefix}/${file.target}' - - - - ${file.source}";
+        "L+ `${prefix}/${file.target}' - - - - ${file.source}";
     in
-    flatten [ (mapAttrsToList (_tmpStr "%h") config.home.file) ];
+    flatten [ (mapAttrsToList (_tmpStr "%h") config._homeFile) ];
 }

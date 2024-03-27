@@ -1,35 +1,31 @@
 {
   pkgs,
   lib,
-  nuke,
+  _lib,
   config,
-  colours,
+  _colours,
   ...
 }:
-let
-  inherit (lib) mkIf;
-  inherit (nuke) mkEnable;
-in
 {
-  options.mods.desktop.hyprland = mkEnable;
-  config = mkIf config.mods.desktop.hyprland {
-    programs.hyprland.enable = config.mods.desktop.hyprland;
+  options._desktop = _lib.mkEnable;
+  config = lib.mkIf config._desktop {
     users.users.main.packages = builtins.attrValues {
       inherit (pkgs)
         wpaperd
         hypridle
+        hyprlock
         xdg-utils
         wl-clipboard
-        hyprlock
         fuzzel
         ;
     };
-    home.file =
+    programs.hyprland.enable = true;
+    _homeFile =
       let
         m1 = "DP-1";
         m2 = "HDMI-A-1";
-        inherit (colours.primary) bg main;
         nls = a: b: lib.concatMapStringsSep "\n" a b;
+        inherit (_colours) primary;
       in
       {
         ".config/hypr/hypridle.conf".text = ''
@@ -56,7 +52,7 @@ in
             (n: ''
               background {
                 monitor = ${n}
-                path = /home/nuko/.cache/rwpspread/rwps_${n}.png
+                path = /home/${config.users.users.main.name}/.cache/rwpspread/rwps_${n}.png
                 brightness = 0.8
                 blur_size = 7
                 blur_passes = 1
@@ -87,11 +83,11 @@ in
               "hyprlock"
               "hypridle"
               "wpaperd"
+              "openrgb -p default"
             ]}
             ${nls (n: "env = ${n}") [
               "XCURSOR_SIZE,24"
-              "XCURSOR_THEME,phinger-cursors"
-              "QT_QPA_PLATFORMTHEME,qt5ct"
+              #"XCURSOR_THEME,phinger-cursors"
               "_JAVA_AWT_WM_NONREPARENTING,1"
             ]}
             monitor=${m1},highrr,auto,auto
@@ -107,8 +103,8 @@ in
               border_size = 2
               gaps_out = 6
               gaps_in = 3
-              col.inactive_border = 0xFF${bg}
-              col.active_border = 0xFF${main}
+              col.inactive_border = 0xFF${primary.bg}
+              col.active_border = 0xFF${primary.main}
             }
             decoration {
               rounding = 3
@@ -149,11 +145,91 @@ in
               "SUPER, up, movefocus, u"
               "SUPER, down, movefocus, d"
             ]}
-            ${nls (n: "bind=SUPER,${n},workspace,${n}") (map toString (range 1 8))} 
+            ${nls (n: "bind=SUPER,${n},workspace,${n}") (map toString (range 1 8))}
             ${nls (n: "bind=SUPER_SHIFT,${n},movetoworkspacesilent,${n}") (map toString (range 1 8))}
             bindm = SUPER, mouse:272, movewindow
             bindm = SUPER, mouse:273, resizewindow
           '';
+        ".config/fuzzel/fuzzel.ini" = {
+          source = (pkgs.formats.ini { }).generate "fuzzel.ini" {
+            colors = {
+              background = primary.bg + "FF";
+              text = primary.fg + "FF";
+              match = primary.main + "FF";
+              border = primary.main + "FF";
+            };
+          };
+        };
       };
+    services = {
+      greetd = {
+        enable = true;
+        settings.default_session = {
+          command = "Hyprland";
+          user = config.users.users.main.name;
+        };
+      };
+      hardware.openrgb = {
+        enable = true;
+        motherboard = "amd";
+      };
+      pipewire = {
+        enable = true;
+        alsa.enable = true;
+        pulse.enable = true;
+      };
+    };
+    security.rtkit.enable = true;
+    fonts = {
+      packages = builtins.attrValues {
+        inherit (pkgs)
+          noto-fonts
+          noto-fonts-emoji
+          noto-fonts-extra
+          noto-fonts-cjk
+          ;
+      };
+      fontconfig = {
+        defaultFonts = {
+          sansSerif = [ "Noto Sans" ];
+          serif = [ "Noto Sans" ];
+          monospace = [ "Noto Mono" ];
+        };
+        subpixel.rgba = "rgb";
+      };
+    };
+    boot = {
+      plymouth.enable = true;
+      initrd.verbose = false;
+      kernelParams = [
+        "quiet"
+        "splash"
+      ];
+    };
+    console = {
+      font = "${pkgs.terminus_font}/share/consolefonts/ter-116n.psf.gz";
+      colors =
+        let
+          inherit (_colours) alpha accent primary;
+        in
+        [
+          "000000" # match boot.
+          alpha.red
+          alpha.green
+          alpha.yellow
+          alpha.blue
+          alpha.magenta
+          alpha.cyan
+          alpha.white
+          accent.red
+          accent.green
+          accent.yellow
+          accent.blue
+          accent.magenta
+          accent.cyan
+          accent.white
+          primary.fg
+        ];
+    };
   };
 }

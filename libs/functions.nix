@@ -1,11 +1,11 @@
-{ lib, nuke, ... }:
+{ lib, _lib, ... }:
 let
-  inherit (lib) mkOption listToAttrs;
-  inherit (lib.types) int bool str;
-  inherit (nuke) mkEnable setInt setStr;
+  inherit (lib) mkOption listToAttrs types;
+  inherit (types) int bool str;
+  inherit (_lib) mkEnable setInt setStr;
 in
 {
-  _module.args.nuke = {
+  _module.args._lib = {
     setInt =
       dint:
       mkOption {
@@ -20,20 +20,25 @@ in
         type = str;
         readOnly = true;
       };
-
-    # like `lib.mkEnableOption` but stupid.
+    # like `lib.mkEnableOption` but stupid
     mkEnable = mkOption {
       default = false;
       type = bool;
     };
-    # all my web modules just have these options anyway.
+    # all my web modules just have these options anyway
     mkWebOpt = dns: port: {
       enable = mkEnable;
       dns = setStr dns;
       port = setInt port;
     };
-
-    # how this isnt yet in `lib.` is surprising..
+    # how this isnt yet in `lib.` is surprising
     genAttrs' = list: f: listToAttrs (map f list);
+
+    mkAssert = a: [
+      {
+        assertion = a;
+        message = "all web modules require nginx.";
+      }
+    ];
   };
 }

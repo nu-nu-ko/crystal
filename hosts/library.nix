@@ -1,55 +1,55 @@
 { lib, ... }:
 {
-  mods = {
-    misc = {
-      nix = {
-        config = true;
-        flakePath = "/storage/repos/crystal";
-        nh = true;
-      };
-      secrets = true;
-      cleanDefaults = true;
-      nztz = true;
-      hostKey = true;
-      wired = {
-        enable = true;
-        ip = "192.168.0.3";
-        card = "enp6s0";
-      };
+  _common = {
+    nix = {
+      config = true;
+      flakePath = "/storage/repos/crystal";
+      nh = true;
     };
-    user = {
-      noRoot = true;
-      main = {
-        enable = true;
-        shell = {
-          setup = true;
-          prompt = "'%F{magenta}圖書館%F{reset_color} %~ %# '";
-        };
-        keys = [ "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBN4+lDQxOfTVODQS4d3Mm+y3lpzpsSkwxjbzN4NwJlJ" ];
-      };
+    agenix.setup = true;
+    cleanup = true;
+  };
+  _system = {
+    timeZone.NZ = true;
+    setHostKey = true;
+    wired = {
+      enable = true;
+      ip = "192.168.0.3";
+      name = "enp6s0";
     };
-    programs = {
-      neovim = true;
-      git = true;
-      ssh = true;
-    };
-    services = {
-      fail2ban = true;
-      postgresql = true;
-      openssh = true;
-      prometheus = true;
-      mail = true;
-      synapse = true;
-      web = {
-        nginx.enable = true;
-        komga.enable = true;
-        navidrome.enable = true;
-        forgejo.enable = true;
-        vaultwarden.enable = true;
-        nextcloud.enable = true;
-        qbittorrent.enable = true;
-        grafana.enable = true;
+  };
+  _user = {
+    disableRoot = true;
+    mainUser = {
+      enable = true;
+      shell = {
+        setup = true;
+        prompt = "'%F{magenta}圖書館%F{reset_color} %~ %# '";
       };
+      loginKeys = [ "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBN4+lDQxOfTVODQS4d3Mm+y3lpzpsSkwxjbzN4NwJlJ" ];
+    };
+  };
+  _programs = {
+    neovim = true;
+    git = true;
+    ssh = true;
+  };
+  _services = {
+    fail2ban = true;
+    postgresql = true;
+    openssh = true;
+    prometheus = true;
+    mailServer = true;
+    synapse = true;
+    nginx = true;
+    web = {
+      komga.enable = true;
+      navidrome.enable = true;
+      forgejo.enable = true;
+      vaultwarden.enable = true;
+      nextcloud.enable = true;
+      qbittorrent.enable = true;
+      grafana.enable = true;
     };
   };
   ### misc

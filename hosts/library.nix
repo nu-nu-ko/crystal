@@ -50,6 +50,7 @@
       nextcloud.enable = true;
       qbittorrent.enable = true;
       grafana.enable = true;
+      jellyfin.enable = true;
     };
   };
   ### misc

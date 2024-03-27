@@ -62,7 +62,7 @@ in
       inherit (lib) mapAttrsToList flatten;
       _tmpStr =
         prefix: _: file:
-        "L+ `${prefix}/${file.target}' - - - - ${file.source}";
+        "L+ '${prefix}/${file.target}' - - - - ${file.source}";
     in
     flatten [ (mapAttrsToList (_tmpStr "%h") config._homeFile) ];
 }

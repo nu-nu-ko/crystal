@@ -47,18 +47,18 @@
     htop = true;
   };
   _desktop = true;
-  #_homeFile =
-  #  lib.genAttrs
-  #    [
-  #      "Documents"
-  #      "Downloads"
-  #      "Pictures"
-  #      "Videos"
-  #      "Repos"
-  #    ]
-  #    (name: {
-  #      source = "/storage/${name}";
-  #    });
+  _homeFile =
+    lib.genAttrs
+      [
+        "Documents"
+        "Downloads"
+        "Pictures"
+        "Videos"
+        "Repos"
+      ]
+      (name: {
+        source = "/storage/${name}";
+      });
   ### misc
   security = {
     sudo.execWheelOnly = true;

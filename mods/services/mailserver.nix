@@ -5,8 +5,6 @@
   lib,
   ...
 }:
-#dovecot2.sieve.extensions = [ "fileinto" ];
-# also needs nginx.
 {
   imports = [ inputs.snms.nixosModules.default ];
   options._services.mailServer = _lib.mkEnable;
@@ -52,8 +50,6 @@
         enableImap = false;
         enableSubmission = false;
         localDnsResolver = false;
-        # should ensure nginx is enabled then.
-        certificateScheme = "acme-nginx";
       };
     };
 }
